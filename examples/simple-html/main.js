@@ -1,4 +1,3 @@
-
 import { Axes, ClippingComponent, DropboxAPI, Edges, Grid, Viewer } from 'web-ifc-viewer';
 import { createSideMenuButton } from './utils/gui-creator';
 
@@ -12,8 +11,8 @@ const dropBoxAPI = new DropboxAPI(viewer);
 const edges = new Edges(viewer);
 
 //Setup loader
-const loadIfc = (event) => {
-    viewer.loadIfc(event.target.files[0]);
+const loadIfc = async (event) => {
+   await viewer.loadIfc(event.target.files[0], true);
 }
 
 const inputElement = document.createElement('input');
@@ -21,6 +20,9 @@ inputElement.setAttribute('type', 'file');
 inputElement.classList.add('hidden');
 inputElement.addEventListener('change', loadIfc, false);
 document.body.appendChild(inputElement);
+
+window.onmousemove = viewer.preselect;
+window.ondblclick = viewer.select;
 
 //Setup UI
 const loadButton = createSideMenuButton('./resources/folder-icon.svg');
@@ -34,7 +36,6 @@ sectionButton.addEventListener('click', () => {
     sectionButton.blur();
     clippingComponent.active = !clippingComponent.active;
 });
-
 
 const edgesButton = createSideMenuButton('./resources/wireframe-cube.svg');
 edgesButton.addEventListener('click', () => {

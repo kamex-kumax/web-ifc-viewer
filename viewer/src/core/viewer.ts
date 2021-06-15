@@ -1,10 +1,16 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { IFCLoader } from 'three/examples/jsm/loaders/IFCLoader.js';
 import { Component } from '../components';
+import { getBasisTransform } from '../utils/ThreeUtils';
+import { VisualizationInfo } from '@parametricos/bcf-js';
+import { IfcManager } from './IFC/ifc-manager';
+
+export interface ViewerOptions {
+    backgroundColor?: THREE.Color
+}
 
 export class Viewer {
-    
+
     // We keep track of components to update
     components: Component[] = [];
 
@@ -13,10 +19,12 @@ export class Viewer {
     renderer: THREE.WebGLRenderer;
     clock: THREE.Clock;
     controls: OrbitControls;
-    ifcLoader: IFCLoader;
+    ifcManager: IfcManager;
     mouse: THREE.Vector2 = new THREE.Vector2()
 
-    constructor(container: HTMLElement) {
+    ifc_objects: THREE.Object3D[] = []
+
+    constructor(container: HTMLElement, options?: ViewerOptions) {
 
         if(!container){
             throw new Error("Could not get container element!")
@@ -41,11 +49,8 @@ export class Viewer {
         const controls = new OrbitControls(camera, renderer.domElement);
         this.controls = controls;
 
-        const ifcLoader = new IFCLoader();
-        this.ifcLoader = ifcLoader;
-
         //Scene
-        scene.background = new THREE.Color(0xa9a9a9);
+        scene.background = options?.backgroundColor || new THREE.Color(0xa9a9a9);
 
         //Renderer
         renderer.setSize(width, height);
@@ -91,6 +96,9 @@ export class Viewer {
         });
 
         this.render();
+
+        //IFC management
+        this.ifcManager = new IfcManager(this.ifc_objects, this.scene, this.camera, this.mouse);
     }
 
     render = () => {
@@ -101,29 +109,21 @@ export class Viewer {
         this.components.forEach((component) => component.update(delta));
     };
 
-    loadIfc = (file: File, fitToFrame: boolean = false) => {
-        const url = URL.createObjectURL(file);
-        try {
-            this.ifcLoader.load(url, (object) => {
-                object.isIFC = true;
-                this.scene.add(object);
-                if(fitToFrame) this.fitModelToFrame();
-            });
-        }catch(err){
-            console.error("Error loading IFC.")
-            console.error(err);
-        }
+    loadIfc = async (file: File, fitToFrame: boolean = false) => {
+        await this.ifcManager.loadIfc(file, this.scene);
+        if(fitToFrame) this.fitModelToFrame();
+    }
+
+    preselect = (event: any) => {
+        this.ifcManager.preselect(event);
+    }
+
+    select = (event: any) => {
+        this.ifcManager.select(event);
     }
 
     get ifcObjects() {
-        const ifcObjects: THREE.Object3D[] = [];
-        this.scene.children.forEach((item) => {
-            // @ts-expect-error
-            if (item.isIFC && item.children) {
-                ifcObjects.push(...item.children);
-            }
-        });
-        return ifcObjects;
+        return this.ifc_objects;
     };
 
     addComponent = (component: Component) => {
@@ -152,10 +152,40 @@ export class Viewer {
         this.controls.target.copy(boxCenter);
         this.controls.update();
     }
+
+    set currentViewpoint(viewpoint: VisualizationInfo) {
+
+        if(viewpoint.perspective_camera) {
+            const { camera_view_point, camera_direction, field_of_view } = viewpoint.perspective_camera;
+
+            const matrix = new THREE.Matrix4();
+            getBasisTransform("+X+Z-Y", "+X+Y+Z", matrix);
+
+            //Left handed Z up => Right handed Y up
+            const position = new THREE.Vector3(camera_view_point.x, camera_view_point.y, camera_view_point.z);
+            const direction = new THREE.Vector3(camera_direction.x, camera_direction.y, camera_direction.z);
+            position.applyMatrix4(matrix);
+            direction.applyMatrix4(matrix);
+
+            this.controls.object.position.set(position.x, position.y, position.z);
+
+            const ray = new THREE.Ray(position, direction);
+            const target = new THREE.Vector3();
+            ray.at(5, target);
+            this.controls.target = new THREE.Vector3(target.x, target.y, target.z);
+            this.controls.update();
+            // this.camera.up.set(camera_up_vector.x, camera_up_vector.z, -camera_up_vector.y);
+            this.camera.fov = field_of_view;
+        }
+    }
+
+    takeScreenshot = () => {
+        this.render();
+        return this.renderer.domElement.toDataURL("image/png");
+    }
 }
 
 export interface IfcObject3D extends THREE.Object3D {
     isIFC?: boolean
     isSelected?: boolean,
-
 }
