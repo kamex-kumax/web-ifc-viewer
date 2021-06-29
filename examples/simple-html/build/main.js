@@ -256,8 +256,6 @@
 
 	}
 
-	let _seed = 1234567;
-
 
 	const DEG2RAD = Math.PI / 180;
 	const RAD2DEG = 180 / Math.PI;
@@ -293,115 +291,10 @@
 
 	}
 
-	// Linear mapping from range <a1, a2> to range <b1, b2>
-	function mapLinear( x, a1, a2, b1, b2 ) {
-
-		return b1 + ( x - a1 ) * ( b2 - b1 ) / ( a2 - a1 );
-
-	}
-
-	// https://www.gamedev.net/tutorials/programming/general-and-gameplay-programming/inverse-lerp-a-super-useful-yet-often-overlooked-function-r5230/
-	function inverseLerp( x, y, value ) {
-
-		if ( x !== y ) {
-
-			return ( value - x ) / ( y - x );
-
-			 } else {
-
-			return 0;
-
-			 }
-
-	}
-
 	// https://en.wikipedia.org/wiki/Linear_interpolation
 	function lerp( x, y, t ) {
 
 		return ( 1 - t ) * x + t * y;
-
-	}
-
-	// http://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/
-	function damp( x, y, lambda, dt ) {
-
-		return lerp( x, y, 1 - Math.exp( - lambda * dt ) );
-
-	}
-
-	// https://www.desmos.com/calculator/vcsjnyz7x4
-	function pingpong( x, length = 1 ) {
-
-		return length - Math.abs( euclideanModulo( x, length * 2 ) - length );
-
-	}
-
-	// http://en.wikipedia.org/wiki/Smoothstep
-	function smoothstep( x, min, max ) {
-
-		if ( x <= min ) return 0;
-		if ( x >= max ) return 1;
-
-		x = ( x - min ) / ( max - min );
-
-		return x * x * ( 3 - 2 * x );
-
-	}
-
-	function smootherstep( x, min, max ) {
-
-		if ( x <= min ) return 0;
-		if ( x >= max ) return 1;
-
-		x = ( x - min ) / ( max - min );
-
-		return x * x * x * ( x * ( x * 6 - 15 ) + 10 );
-
-	}
-
-	// Random integer from <low, high> interval
-	function randInt( low, high ) {
-
-		return low + Math.floor( Math.random() * ( high - low + 1 ) );
-
-	}
-
-	// Random float from <low, high> interval
-	function randFloat( low, high ) {
-
-		return low + Math.random() * ( high - low );
-
-	}
-
-	// Random float from <-range/2, range/2> interval
-	function randFloatSpread( range ) {
-
-		return range * ( 0.5 - Math.random() );
-
-	}
-
-	// Deterministic pseudo-random float in the interval [ 0, 1 ]
-	function seededRandom( s ) {
-
-		if ( s !== undefined ) _seed = s % 2147483647;
-
-		// Park-Miller algorithm
-
-		_seed = _seed * 16807 % 2147483647;
-
-		return ( _seed - 1 ) / 2147483646;
-
-	}
-
-	function degToRad( degrees ) {
-
-		return degrees * DEG2RAD;
-
-	}
-
-	function radToDeg( radians ) {
-
-		return radians * RAD2DEG;
 
 	}
 
@@ -422,88 +315,6 @@
 		return Math.pow( 2, Math.floor( Math.log( value ) / Math.LN2 ) );
 
 	}
-
-	function setQuaternionFromProperEuler( q, a, b, c, order ) {
-
-		// Intrinsic Proper Euler Angles - see https://en.wikipedia.org/wiki/Euler_angles
-
-		// rotations are applied to the axes in the order specified by 'order'
-		// rotation by angle 'a' is applied first, then by angle 'b', then by angle 'c'
-		// angles are in radians
-
-		const cos = Math.cos;
-		const sin = Math.sin;
-
-		const c2 = cos( b / 2 );
-		const s2 = sin( b / 2 );
-
-		const c13 = cos( ( a + c ) / 2 );
-		const s13 = sin( ( a + c ) / 2 );
-
-		const c1_3 = cos( ( a - c ) / 2 );
-		const s1_3 = sin( ( a - c ) / 2 );
-
-		const c3_1 = cos( ( c - a ) / 2 );
-		const s3_1 = sin( ( c - a ) / 2 );
-
-		switch ( order ) {
-
-			case 'XYX':
-				q.set( c2 * s13, s2 * c1_3, s2 * s1_3, c2 * c13 );
-				break;
-
-			case 'YZY':
-				q.set( s2 * s1_3, c2 * s13, s2 * c1_3, c2 * c13 );
-				break;
-
-			case 'ZXZ':
-				q.set( s2 * c1_3, s2 * s1_3, c2 * s13, c2 * c13 );
-				break;
-
-			case 'XZX':
-				q.set( c2 * s13, s2 * s3_1, s2 * c3_1, c2 * c13 );
-				break;
-
-			case 'YXY':
-				q.set( s2 * c3_1, c2 * s13, s2 * s3_1, c2 * c13 );
-				break;
-
-			case 'ZYZ':
-				q.set( s2 * s3_1, s2 * c3_1, c2 * s13, c2 * c13 );
-				break;
-
-			default:
-				console.warn( 'THREE.MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: ' + order );
-
-		}
-
-	}
-
-	var MathUtils = /*#__PURE__*/Object.freeze({
-		__proto__: null,
-		DEG2RAD: DEG2RAD,
-		RAD2DEG: RAD2DEG,
-		generateUUID: generateUUID,
-		clamp: clamp,
-		euclideanModulo: euclideanModulo,
-		mapLinear: mapLinear,
-		inverseLerp: inverseLerp,
-		lerp: lerp,
-		damp: damp,
-		pingpong: pingpong,
-		smoothstep: smoothstep,
-		smootherstep: smootherstep,
-		randInt: randInt,
-		randFloat: randFloat,
-		randFloatSpread: randFloatSpread,
-		seededRandom: seededRandom,
-		degToRad: degToRad,
-		radToDeg: radToDeg,
-		isPowerOfTwo: isPowerOfTwo,
-		ceilPowerOfTwo: ceilPowerOfTwo,
-		floorPowerOfTwo: floorPowerOfTwo,
-		setQuaternionFromProperEuler: setQuaternionFromProperEuler
-	});
 
 	class Vector2 {
 
@@ -7317,7 +7128,7 @@
 	const _vector2$1 = /*@__PURE__*/ new Vector3();
 	const _normalMatrix = /*@__PURE__*/ new Matrix3();
 
-	class Plane$1 {
+	class Plane {
 
 		constructor( normal = new Vector3( 1, 0, 0 ), constant = 0 ) {
 
@@ -7533,7 +7344,7 @@
 
 	}
 
-	Plane$1.prototype.isPlane = true;
+	Plane.prototype.isPlane = true;
 
 	const _v0$1 = /*@__PURE__*/ new Vector3();
 	const _v1$3 = /*@__PURE__*/ new Vector3();
@@ -7722,7 +7533,7 @@
 			if ( target === undefined ) {
 
 				console.warn( 'THREE.Triangle: .getPlane() target is now required' );
-				target = new Plane$1();
+				target = new Plane();
 
 			}
 
@@ -12054,7 +11865,7 @@
 
 	class Frustum {
 
-		constructor( p0 = new Plane$1(), p1 = new Plane$1(), p2 = new Plane$1(), p3 = new Plane$1(), p4 = new Plane$1(), p5 = new Plane$1() ) {
+		constructor( p0 = new Plane(), p1 = new Plane(), p2 = new Plane(), p3 = new Plane(), p4 = new Plane(), p5 = new Plane() ) {
 
 			this.planes = [ p0, p1, p2, p3, p4, p5 ];
 
@@ -14406,7 +14217,7 @@
 			localClippingEnabled = false,
 			renderingShadows = false;
 
-		const plane = new Plane$1(),
+		const plane = new Plane(),
 			viewNormalMatrix = new Matrix3(),
 
 			uniform = { value: null, needsUpdate: false };
@@ -26606,145 +26417,6 @@
 
 	}
 
-	const _v0 = new Vector3();
-	const _v1$1 = new Vector3();
-	const _normal = new Vector3();
-	const _triangle = new Triangle();
-
-	class EdgesGeometry extends BufferGeometry {
-
-		constructor( geometry, thresholdAngle ) {
-
-			super();
-
-			this.type = 'EdgesGeometry';
-
-			this.parameters = {
-				thresholdAngle: thresholdAngle
-			};
-
-			thresholdAngle = ( thresholdAngle !== undefined ) ? thresholdAngle : 1;
-
-			if ( geometry.isGeometry === true ) {
-
-				console.error( 'THREE.EdgesGeometry no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.' );
-				return;
-
-			}
-
-			const precisionPoints = 4;
-			const precision = Math.pow( 10, precisionPoints );
-			const thresholdDot = Math.cos( DEG2RAD * thresholdAngle );
-
-			const indexAttr = geometry.getIndex();
-			const positionAttr = geometry.getAttribute( 'position' );
-			const indexCount = indexAttr ? indexAttr.count : positionAttr.count;
-
-			const indexArr = [ 0, 0, 0 ];
-			const vertKeys = [ 'a', 'b', 'c' ];
-			const hashes = new Array( 3 );
-
-			const edgeData = {};
-			const vertices = [];
-			for ( let i = 0; i < indexCount; i += 3 ) {
-
-				if ( indexAttr ) {
-
-					indexArr[ 0 ] = indexAttr.getX( i );
-					indexArr[ 1 ] = indexAttr.getX( i + 1 );
-					indexArr[ 2 ] = indexAttr.getX( i + 2 );
-
-				} else {
-
-					indexArr[ 0 ] = i;
-					indexArr[ 1 ] = i + 1;
-					indexArr[ 2 ] = i + 2;
-
-				}
-
-				const { a, b, c } = _triangle;
-				a.fromBufferAttribute( positionAttr, indexArr[ 0 ] );
-				b.fromBufferAttribute( positionAttr, indexArr[ 1 ] );
-				c.fromBufferAttribute( positionAttr, indexArr[ 2 ] );
-				_triangle.getNormal( _normal );
-
-				// create hashes for the edge from the vertices
-				hashes[ 0 ] = `${ Math.round( a.x * precision ) },${ Math.round( a.y * precision ) },${ Math.round( a.z * precision ) }`;
-				hashes[ 1 ] = `${ Math.round( b.x * precision ) },${ Math.round( b.y * precision ) },${ Math.round( b.z * precision ) }`;
-				hashes[ 2 ] = `${ Math.round( c.x * precision ) },${ Math.round( c.y * precision ) },${ Math.round( c.z * precision ) }`;
-
-				// skip degenerate triangles
-				if ( hashes[ 0 ] === hashes[ 1 ] || hashes[ 1 ] === hashes[ 2 ] || hashes[ 2 ] === hashes[ 0 ] ) {
-
-					continue;
-
-				}
-
-				// iterate over every edge
-				for ( let j = 0; j < 3; j ++ ) {
-
-					// get the first and next vertex making up the edge
-					const jNext = ( j + 1 ) % 3;
-					const vecHash0 = hashes[ j ];
-					const vecHash1 = hashes[ jNext ];
-					const v0 = _triangle[ vertKeys[ j ] ];
-					const v1 = _triangle[ vertKeys[ jNext ] ];
-
-					const hash = `${ vecHash0 }_${ vecHash1 }`;
-					const reverseHash = `${ vecHash1 }_${ vecHash0 }`;
-
-					if ( reverseHash in edgeData && edgeData[ reverseHash ] ) {
-
-						// if we found a sibling edge add it into the vertex array if
-						// it meets the angle threshold and delete the edge from the map.
-						if ( _normal.dot( edgeData[ reverseHash ].normal ) <= thresholdDot ) {
-
-							vertices.push( v0.x, v0.y, v0.z );
-							vertices.push( v1.x, v1.y, v1.z );
-
-						}
-
-						edgeData[ reverseHash ] = null;
-
-					} else if ( ! ( hash in edgeData ) ) {
-
-						// if we've already got an edge here then skip adding a new one
-						edgeData[ hash ] = {
-
-							index0: indexArr[ j ],
-							index1: indexArr[ jNext ],
-							normal: _normal.clone(),
-
-						};
-
-					}
-
-				}
-
-			}
-
-			// iterate over all remaining, unmatched edges and add them to the vertex array
-			for ( const key in edgeData ) {
-
-				if ( edgeData[ key ] ) {
-
-					const { index0, index1 } = edgeData[ key ];
-					_v0.fromBufferAttribute( positionAttr, index0 );
-					_v1$1.fromBufferAttribute( positionAttr, index1 );
-
-					vertices.push( _v0.x, _v0.y, _v0.z );
-					vertices.push( _v1$1.x, _v1$1.y, _v1$1.z );
-
-				}
-
-			}
-
-			this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-
-		}
-
-	}
-
 	class OctahedronGeometry extends PolyhedronGeometry {
 
 		constructor( radius = 1, detail = 0 ) {
@@ -29076,7 +28748,7 @@
 
 	//
 
-	Plane$1.prototype.isIntersectionLine = function ( line ) {
+	Plane.prototype.isIntersectionLine = function ( line ) {
 
 		console.warn( 'THREE.Plane: .isIntersectionLine() has been renamed to .intersectsLine().' );
 		return this.intersectsLine( line );
@@ -31460,47 +31132,2080 @@
 
 	}
 
-	const basesRegex = /^([+-][xyz])([+-][xyz])([+-][xyz])$/i;
-	const nameToIndex = { x: 0, y: 1, z: 2 };
-	const orderedVectors = [new Vector3(), new Vector3(), new Vector3()];
-	function stringToAxes(axesString) {
-	    if (!basesRegex.test(axesString)) {
-	        return null;
+	class IfcComponent {
+	    constructor(context) {
+	        context.addComponent(this);
 	    }
-	    axesString = axesString.toLowerCase();
-	    // @ts-ignore
-	    return axesString
-	        .match(basesRegex)
-	        .splice(1, 3)
-	        .map(str => {
-	        const negative = str[0] === '-';
-	        const name = str[1];
-	        return { negative, name };
-	    });
+	    update(_delta) { }
 	}
-	function getBasisTransform(from, to, targetMatrix) {
-	    if (!basesRegex.test(from)) {
-	        return null;
+
+	class IfcCamera extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.context = context;
+	        const dims = this.context.getDimensions();
+	        this.camera = new PerspectiveCamera(45, dims.x / dims.y, 0.1, 1000);
+	        this.setupCamera();
+	        this.controls = new OrbitControls(this.camera, context.getDomElement());
+	        this.setupControls();
 	    }
-	    if (!basesRegex.test(to)) {
-	        return null;
+	    update(_delta) {
+	        this.controls.update();
 	    }
-	    const fromAxes = stringToAxes(from);
-	    const toAxes = stringToAxes(to);
-	    if (!fromAxes || !toAxes)
-	        throw new Error();
-	    for (let i = 0; i < 3; i++) {
-	        const fromAxis = fromAxes[i];
-	        const toAxis = toAxes[i];
-	        // @ts-ignore
-	        const fromIndex = nameToIndex[fromAxis.name];
-	        const equalNegative = fromAxis.negative === toAxis.negative;
-	        const vector = orderedVectors[fromIndex];
-	        vector.set(0, 0, 0);
-	        // @ts-ignore
-	        vector[toAxis.name] = equalNegative ? 1 : -1;
+	    updateAspect() {
+	        const dims = this.context.getDimensions();
+	        this.camera.aspect = dims.x / dims.y;
+	        this.camera.updateProjectionMatrix();
 	    }
-	    targetMatrix.makeBasis(orderedVectors[0], orderedVectors[1], orderedVectors[2]);
+	    toggleControls(active) {
+	        this.controls.enabled = active;
+	    }
+	    setupCamera() {
+	        // camera.up = new Vector3(0, 0, 1);
+	        this.camera.position.z = 8;
+	        this.camera.position.y = 8;
+	        this.camera.position.x = 8;
+	        this.camera.lookAt(new Vector3(0, 0, 0));
+	    }
+	    setupControls() {
+	        this.controls.enableDamping = true;
+	        this.controls.dampingFactor *= 2;
+	        const panWithMMB = this.context.options.panWithMMB || true;
+	        if (panWithMMB) {
+	            this.controls.mouseButtons = { RIGHT: MOUSE.RIGHT, MIDDLE: MOUSE.RIGHT, LEFT: MOUSE.LEFT };
+	        }
+	    }
+	}
+
+	class IfcMouse extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.position = new Vector2();
+	        this.setupMousePositionUpdate(context);
+	    }
+	    setupMousePositionUpdate(context) {
+	        const domElement = context.getRenderer().domElement;
+	        domElement.onmousemove = (event) => {
+	            const bounds = domElement.getBoundingClientRect();
+	            this.position.x = ((event.clientX - bounds.left) / (bounds.right - bounds.left)) * 2 - 1;
+	            this.position.y = -((event.clientY - bounds.top) / (bounds.bottom - bounds.top)) * 2 + 1;
+	        };
+	    }
+	}
+
+	class IfcRaycaster extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.context = context;
+	        this.raycaster = new Raycaster();
+	        this.mouse = new IfcMouse(context);
+	    }
+	    castRay(items) {
+	        const camera = this.context.getCamera();
+	        this.raycaster.setFromCamera(this.mouse.position, camera);
+	        return this.raycaster.intersectObjects(items);
+	    }
+	    castRayIfc() {
+	        const items = this.castRay(this.context.items.ifcModels);
+	        return this.filterClippingPlanes(items)[0];
+	    }
+	    filterClippingPlanes(objs) {
+	        const planes = this.context.getClippingPlanes();
+	        if (objs.length <= 0 || !planes || (planes === null || planes === void 0 ? void 0 : planes.length) <= 0)
+	            return objs;
+	        // const planes = this.clipper?.planes.map((p) => p.plane);
+	        return objs.filter((elem) => planes.every((elem2) => elem2.distanceToPoint(elem.point) > 0));
+	    }
+	}
+
+	class IfcRenderer extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.context = context;
+	        this.container = context.options.container;
+	        this.renderer = new WebGLRenderer({ antialias: true });
+	        this.setupRenderer();
+	        this.adjustRendererSize();
+	    }
+	    update(_delta) {
+	        const scene = this.context.getScene();
+	        const camera = this.context.getCamera();
+	        this.renderer.render(scene, camera);
+	    }
+	    getSize() {
+	        return new Vector2(this.renderer.domElement.clientWidth, this.renderer.domElement.clientHeight);
+	    }
+	    adjustRendererSize() {
+	        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+	    }
+	    setupRenderer() {
+	        this.renderer.localClippingEnabled = true;
+	        this.container.appendChild(this.renderer.domElement);
+	    }
+	}
+
+	class IfcScene extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.scene = new Scene();
+	        this.setupScene(context.options);
+	        this.setupLights();
+	    }
+	    add(item) {
+	        this.scene.add(item);
+	    }
+	    remove(item) {
+	        this.scene.remove(item);
+	    }
+	    setupScene(options) {
+	        this.scene.background = (options === null || options === void 0 ? void 0 : options.backgroundColor) || new Color(0xa9a9a9);
+	    }
+	    setupLights() {
+	        const light1 = new DirectionalLight(0xffeeff, 0.8);
+	        light1.position.set(1, 1, 1);
+	        this.scene.add(light1);
+	        const light2 = new DirectionalLight(0xffffff, 0.8);
+	        light2.position.set(-1, 0.5, -1);
+	        this.scene.add(light2);
+	        const ambientLight = new AmbientLight(0xffffee, 0.25);
+	        this.scene.add(ambientLight);
+	    }
+	}
+
+	class IfcContext$1 {
+	    constructor(options) {
+	        this.render = () => {
+	            requestAnimationFrame(this.render);
+	            this.updateAllComponents();
+	        };
+	        if (!options.container)
+	            throw new Error('Could not get container element!');
+	        this.options = options;
+	        this.items = this.newItems();
+	        this.ifcScene = new IfcScene(this);
+	        this.ifcRenderer = new IfcRenderer(this);
+	        this.ifcCamera = new IfcCamera(this);
+	        this.clippingPlanes = [];
+	        this.ifcCaster = new IfcRaycaster(this);
+	        this.clock = new Clock(true);
+	        this.setupWindowRescale();
+	        this.render();
+	    }
+	    getScene() {
+	        return this.ifcScene.scene;
+	    }
+	    getRenderer() {
+	        return this.ifcRenderer.renderer;
+	    }
+	    getCamera() {
+	        return this.ifcCamera.camera;
+	    }
+	    toggleCameraControls(active) {
+	        this.ifcCamera.toggleControls(active);
+	    }
+	    getDomElement() {
+	        return this.getRenderer().domElement;
+	    }
+	    getDimensions() {
+	        const element = this.getDomElement();
+	        return new Vector2(element.clientWidth, element.clientHeight);
+	    }
+	    getClippingPlanes() {
+	        return this.clippingPlanes;
+	    }
+	    addComponent(component) {
+	        this.items.components.push(component);
+	    }
+	    addClippingPlane(plane) {
+	        this.clippingPlanes.push(plane);
+	    }
+	    removeClippingPlane(plane) {
+	        const index = this.clippingPlanes.indexOf(plane);
+	        this.clippingPlanes.splice(index, 1);
+	    }
+	    castRay(items) {
+	        return this.ifcCaster.castRay(items);
+	    }
+	    castRayIfc() {
+	        return this.ifcCaster.castRayIfc();
+	    }
+	    updateAllComponents() {
+	        const delta = this.clock.getDelta();
+	        this.items.components.forEach((component) => component.update(delta));
+	    }
+	    setupWindowRescale() {
+	        window.addEventListener('resize', () => {
+	            this.ifcCamera.updateAspect();
+	            this.ifcRenderer.adjustRendererSize();
+	        });
+	    }
+	    newItems() {
+	        return {
+	            components: [],
+	            ifcModels: []
+	        };
+	    }
+	}
+
+	const _raycaster = new Raycaster();
+
+	const _tempVector = new Vector3();
+	const _tempVector2 = new Vector3();
+	const _tempQuaternion = new Quaternion();
+	const _unit = {
+		X: new Vector3( 1, 0, 0 ),
+		Y: new Vector3( 0, 1, 0 ),
+		Z: new Vector3( 0, 0, 1 )
+	};
+
+	const _changeEvent = { type: 'change' };
+	const _mouseDownEvent = { type: 'mouseDown' };
+	const _mouseUpEvent = { type: 'mouseUp', mode: null };
+	const _objectChangeEvent = { type: 'objectChange' };
+
+	class TransformControls extends Object3D {
+
+		constructor( camera, domElement ) {
+
+			super();
+
+			if ( domElement === undefined ) {
+
+				console.warn( 'THREE.TransformControls: The second parameter "domElement" is now mandatory.' );
+				domElement = document;
+
+			}
+
+			this.visible = false;
+			this.domElement = domElement;
+
+			const _gizmo = new TransformControlsGizmo();
+			this._gizmo = _gizmo;
+			this.add( _gizmo );
+
+			const _plane = new TransformControlsPlane();
+			this._plane = _plane;
+			this.add( _plane );
+
+			const scope = this;
+
+			// Defined getter, setter and store for a property
+			function defineProperty( propName, defaultValue ) {
+
+				let propValue = defaultValue;
+
+				Object.defineProperty( scope, propName, {
+
+					get: function () {
+
+						return propValue !== undefined ? propValue : defaultValue;
+
+					},
+
+					set: function ( value ) {
+
+						if ( propValue !== value ) {
+
+							propValue = value;
+							_plane[ propName ] = value;
+							_gizmo[ propName ] = value;
+
+							scope.dispatchEvent( { type: propName + '-changed', value: value } );
+							scope.dispatchEvent( _changeEvent );
+
+						}
+
+					}
+
+				} );
+
+				scope[ propName ] = defaultValue;
+				_plane[ propName ] = defaultValue;
+				_gizmo[ propName ] = defaultValue;
+
+			}
+
+			// Define properties with getters/setter
+			// Setting the defined property will automatically trigger change event
+			// Defined properties are passed down to gizmo and plane
+
+			defineProperty( 'camera', camera );
+			defineProperty( 'object', undefined );
+			defineProperty( 'enabled', true );
+			defineProperty( 'axis', null );
+			defineProperty( 'mode', 'translate' );
+			defineProperty( 'translationSnap', null );
+			defineProperty( 'rotationSnap', null );
+			defineProperty( 'scaleSnap', null );
+			defineProperty( 'space', 'world' );
+			defineProperty( 'size', 1 );
+			defineProperty( 'dragging', false );
+			defineProperty( 'showX', true );
+			defineProperty( 'showY', true );
+			defineProperty( 'showZ', true );
+
+			// Reusable utility variables
+
+			const worldPosition = new Vector3();
+			const worldPositionStart = new Vector3();
+			const worldQuaternion = new Quaternion();
+			const worldQuaternionStart = new Quaternion();
+			const cameraPosition = new Vector3();
+			const cameraQuaternion = new Quaternion();
+			const pointStart = new Vector3();
+			const pointEnd = new Vector3();
+			const rotationAxis = new Vector3();
+			const rotationAngle = 0;
+			const eye = new Vector3();
+
+			// TODO: remove properties unused in plane and gizmo
+
+			defineProperty( 'worldPosition', worldPosition );
+			defineProperty( 'worldPositionStart', worldPositionStart );
+			defineProperty( 'worldQuaternion', worldQuaternion );
+			defineProperty( 'worldQuaternionStart', worldQuaternionStart );
+			defineProperty( 'cameraPosition', cameraPosition );
+			defineProperty( 'cameraQuaternion', cameraQuaternion );
+			defineProperty( 'pointStart', pointStart );
+			defineProperty( 'pointEnd', pointEnd );
+			defineProperty( 'rotationAxis', rotationAxis );
+			defineProperty( 'rotationAngle', rotationAngle );
+			defineProperty( 'eye', eye );
+
+			this._offset = new Vector3();
+			this._startNorm = new Vector3();
+			this._endNorm = new Vector3();
+			this._cameraScale = new Vector3();
+
+			this._parentPosition = new Vector3();
+			this._parentQuaternion = new Quaternion();
+			this._parentQuaternionInv = new Quaternion();
+			this._parentScale = new Vector3();
+
+			this._worldScaleStart = new Vector3();
+			this._worldQuaternionInv = new Quaternion();
+			this._worldScale = new Vector3();
+
+			this._positionStart = new Vector3();
+			this._quaternionStart = new Quaternion();
+			this._scaleStart = new Vector3();
+
+			this._getPointer = getPointer.bind( this );
+			this._onPointerDown = onPointerDown.bind( this );
+			this._onPointerHover = onPointerHover.bind( this );
+			this._onPointerMove = onPointerMove.bind( this );
+			this._onPointerUp = onPointerUp.bind( this );
+
+			this.domElement.addEventListener( 'pointerdown', this._onPointerDown );
+			this.domElement.addEventListener( 'pointermove', this._onPointerHover );
+			this.domElement.ownerDocument.addEventListener( 'pointerup', this._onPointerUp );
+
+		}
+
+		// updateMatrixWorld  updates key transformation variables
+		updateMatrixWorld() {
+
+			if ( this.object !== undefined ) {
+
+				this.object.updateMatrixWorld();
+
+				if ( this.object.parent === null ) {
+
+					console.error( 'TransformControls: The attached 3D object must be a part of the scene graph.' );
+
+				} else {
+
+					this.object.parent.matrixWorld.decompose( this._parentPosition, this._parentQuaternion, this._parentScale );
+
+				}
+
+				this.object.matrixWorld.decompose( this.worldPosition, this.worldQuaternion, this._worldScale );
+
+				this._parentQuaternionInv.copy( this._parentQuaternion ).invert();
+				this._worldQuaternionInv.copy( this.worldQuaternion ).invert();
+
+			}
+
+			this.camera.updateMatrixWorld();
+			this.camera.matrixWorld.decompose( this.cameraPosition, this.cameraQuaternion, this._cameraScale );
+
+			this.eye.copy( this.cameraPosition ).sub( this.worldPosition ).normalize();
+
+			super.updateMatrixWorld( this );
+
+		}
+
+		pointerHover( pointer ) {
+
+			if ( this.object === undefined || this.dragging === true ) return;
+
+			_raycaster.setFromCamera( pointer, this.camera );
+
+			const intersect = intersectObjectWithRay( this._gizmo.picker[ this.mode ], _raycaster );
+
+			if ( intersect ) {
+
+				this.axis = intersect.object.name;
+
+			} else {
+
+				this.axis = null;
+
+			}
+
+		}
+
+		pointerDown( pointer ) {
+
+			if ( this.object === undefined || this.dragging === true || pointer.button !== 0 ) return;
+
+			if ( this.axis !== null ) {
+
+				_raycaster.setFromCamera( pointer, this.camera );
+
+				const planeIntersect = intersectObjectWithRay( this._plane, _raycaster, true );
+
+				if ( planeIntersect ) {
+
+					let space = this.space;
+
+					if ( this.mode === 'scale' ) {
+
+						space = 'local';
+
+					} else if ( this.axis === 'E' || this.axis === 'XYZE' || this.axis === 'XYZ' ) {
+
+						space = 'world';
+
+					}
+
+					if ( space === 'local' && this.mode === 'rotate' ) {
+
+						const snap = this.rotationSnap;
+
+						if ( this.axis === 'X' && snap ) this.object.rotation.x = Math.round( this.object.rotation.x / snap ) * snap;
+						if ( this.axis === 'Y' && snap ) this.object.rotation.y = Math.round( this.object.rotation.y / snap ) * snap;
+						if ( this.axis === 'Z' && snap ) this.object.rotation.z = Math.round( this.object.rotation.z / snap ) * snap;
+
+					}
+
+					this.object.updateMatrixWorld();
+					this.object.parent.updateMatrixWorld();
+
+					this._positionStart.copy( this.object.position );
+					this._quaternionStart.copy( this.object.quaternion );
+					this._scaleStart.copy( this.object.scale );
+
+					this.object.matrixWorld.decompose( this.worldPositionStart, this.worldQuaternionStart, this._worldScaleStart );
+
+					this.pointStart.copy( planeIntersect.point ).sub( this.worldPositionStart );
+
+				}
+
+				this.dragging = true;
+				_mouseDownEvent.mode = this.mode;
+				this.dispatchEvent( _mouseDownEvent );
+
+			}
+
+		}
+
+		pointerMove( pointer ) {
+
+			const axis = this.axis;
+			const mode = this.mode;
+			const object = this.object;
+			let space = this.space;
+
+			if ( mode === 'scale' ) {
+
+				space = 'local';
+
+			} else if ( axis === 'E' || axis === 'XYZE' || axis === 'XYZ' ) {
+
+				space = 'world';
+
+			}
+
+			if ( object === undefined || axis === null || this.dragging === false || pointer.button !== - 1 ) return;
+
+			_raycaster.setFromCamera( pointer, this.camera );
+
+			const planeIntersect = intersectObjectWithRay( this._plane, _raycaster, true );
+
+			if ( ! planeIntersect ) return;
+
+			this.pointEnd.copy( planeIntersect.point ).sub( this.worldPositionStart );
+
+			if ( mode === 'translate' ) {
+
+				// Apply translate
+
+				this._offset.copy( this.pointEnd ).sub( this.pointStart );
+
+				if ( space === 'local' && axis !== 'XYZ' ) {
+
+					this._offset.applyQuaternion( this._worldQuaternionInv );
+
+				}
+
+				if ( axis.indexOf( 'X' ) === - 1 ) this._offset.x = 0;
+				if ( axis.indexOf( 'Y' ) === - 1 ) this._offset.y = 0;
+				if ( axis.indexOf( 'Z' ) === - 1 ) this._offset.z = 0;
+
+				if ( space === 'local' && axis !== 'XYZ' ) {
+
+					this._offset.applyQuaternion( this._quaternionStart ).divide( this._parentScale );
+
+				} else {
+
+					this._offset.applyQuaternion( this._parentQuaternionInv ).divide( this._parentScale );
+
+				}
+
+				object.position.copy( this._offset ).add( this._positionStart );
+
+				// Apply translation snap
+
+				if ( this.translationSnap ) {
+
+					if ( space === 'local' ) {
+
+						object.position.applyQuaternion( _tempQuaternion.copy( this._quaternionStart ).invert() );
+
+						if ( axis.search( 'X' ) !== - 1 ) {
+
+							object.position.x = Math.round( object.position.x / this.translationSnap ) * this.translationSnap;
+
+						}
+
+						if ( axis.search( 'Y' ) !== - 1 ) {
+
+							object.position.y = Math.round( object.position.y / this.translationSnap ) * this.translationSnap;
+
+						}
+
+						if ( axis.search( 'Z' ) !== - 1 ) {
+
+							object.position.z = Math.round( object.position.z / this.translationSnap ) * this.translationSnap;
+
+						}
+
+						object.position.applyQuaternion( this._quaternionStart );
+
+					}
+
+					if ( space === 'world' ) {
+
+						if ( object.parent ) {
+
+							object.position.add( _tempVector.setFromMatrixPosition( object.parent.matrixWorld ) );
+
+						}
+
+						if ( axis.search( 'X' ) !== - 1 ) {
+
+							object.position.x = Math.round( object.position.x / this.translationSnap ) * this.translationSnap;
+
+						}
+
+						if ( axis.search( 'Y' ) !== - 1 ) {
+
+							object.position.y = Math.round( object.position.y / this.translationSnap ) * this.translationSnap;
+
+						}
+
+						if ( axis.search( 'Z' ) !== - 1 ) {
+
+							object.position.z = Math.round( object.position.z / this.translationSnap ) * this.translationSnap;
+
+						}
+
+						if ( object.parent ) {
+
+							object.position.sub( _tempVector.setFromMatrixPosition( object.parent.matrixWorld ) );
+
+						}
+
+					}
+
+				}
+
+			} else if ( mode === 'scale' ) {
+
+				if ( axis.search( 'XYZ' ) !== - 1 ) {
+
+					let d = this.pointEnd.length() / this.pointStart.length();
+
+					if ( this.pointEnd.dot( this.pointStart ) < 0 ) d *= - 1;
+
+					_tempVector2.set( d, d, d );
+
+				} else {
+
+					_tempVector.copy( this.pointStart );
+					_tempVector2.copy( this.pointEnd );
+
+					_tempVector.applyQuaternion( this._worldQuaternionInv );
+					_tempVector2.applyQuaternion( this._worldQuaternionInv );
+
+					_tempVector2.divide( _tempVector );
+
+					if ( axis.search( 'X' ) === - 1 ) {
+
+						_tempVector2.x = 1;
+
+					}
+
+					if ( axis.search( 'Y' ) === - 1 ) {
+
+						_tempVector2.y = 1;
+
+					}
+
+					if ( axis.search( 'Z' ) === - 1 ) {
+
+						_tempVector2.z = 1;
+
+					}
+
+				}
+
+				// Apply scale
+
+				object.scale.copy( this._scaleStart ).multiply( _tempVector2 );
+
+				if ( this.scaleSnap ) {
+
+					if ( axis.search( 'X' ) !== - 1 ) {
+
+						object.scale.x = Math.round( object.scale.x / this.scaleSnap ) * this.scaleSnap || this.scaleSnap;
+
+					}
+
+					if ( axis.search( 'Y' ) !== - 1 ) {
+
+						object.scale.y = Math.round( object.scale.y / this.scaleSnap ) * this.scaleSnap || this.scaleSnap;
+
+					}
+
+					if ( axis.search( 'Z' ) !== - 1 ) {
+
+						object.scale.z = Math.round( object.scale.z / this.scaleSnap ) * this.scaleSnap || this.scaleSnap;
+
+					}
+
+				}
+
+			} else if ( mode === 'rotate' ) {
+
+				this._offset.copy( this.pointEnd ).sub( this.pointStart );
+
+				const ROTATION_SPEED = 20 / this.worldPosition.distanceTo( _tempVector.setFromMatrixPosition( this.camera.matrixWorld ) );
+
+				if ( axis === 'E' ) {
+
+					this.rotationAxis.copy( this.eye );
+					this.rotationAngle = this.pointEnd.angleTo( this.pointStart );
+
+					this._startNorm.copy( this.pointStart ).normalize();
+					this._endNorm.copy( this.pointEnd ).normalize();
+
+					this.rotationAngle *= ( this._endNorm.cross( this._startNorm ).dot( this.eye ) < 0 ? 1 : - 1 );
+
+				} else if ( axis === 'XYZE' ) {
+
+					this.rotationAxis.copy( this._offset ).cross( this.eye ).normalize();
+					this.rotationAngle = this._offset.dot( _tempVector.copy( this.rotationAxis ).cross( this.eye ) ) * ROTATION_SPEED;
+
+				} else if ( axis === 'X' || axis === 'Y' || axis === 'Z' ) {
+
+					this.rotationAxis.copy( _unit[ axis ] );
+
+					_tempVector.copy( _unit[ axis ] );
+
+					if ( space === 'local' ) {
+
+						_tempVector.applyQuaternion( this.worldQuaternion );
+
+					}
+
+					this.rotationAngle = this._offset.dot( _tempVector.cross( this.eye ).normalize() ) * ROTATION_SPEED;
+
+				}
+
+				// Apply rotation snap
+
+				if ( this.rotationSnap ) this.rotationAngle = Math.round( this.rotationAngle / this.rotationSnap ) * this.rotationSnap;
+
+				// Apply rotate
+				if ( space === 'local' && axis !== 'E' && axis !== 'XYZE' ) {
+
+					object.quaternion.copy( this._quaternionStart );
+					object.quaternion.multiply( _tempQuaternion.setFromAxisAngle( this.rotationAxis, this.rotationAngle ) ).normalize();
+
+				} else {
+
+					this.rotationAxis.applyQuaternion( this._parentQuaternionInv );
+					object.quaternion.copy( _tempQuaternion.setFromAxisAngle( this.rotationAxis, this.rotationAngle ) );
+					object.quaternion.multiply( this._quaternionStart ).normalize();
+
+				}
+
+			}
+
+			this.dispatchEvent( _changeEvent );
+			this.dispatchEvent( _objectChangeEvent );
+
+		}
+
+		pointerUp( pointer ) {
+
+			if ( pointer.button !== 0 ) return;
+
+			if ( this.dragging && ( this.axis !== null ) ) {
+
+				_mouseUpEvent.mode = this.mode;
+				this.dispatchEvent( _mouseUpEvent );
+
+			}
+
+			this.dragging = false;
+			this.axis = null;
+
+		}
+
+		dispose() {
+
+			this.domElement.removeEventListener( 'pointerdown', this._onPointerDown );
+			this.domElement.removeEventListener( 'pointermove', this._onPointerHover );
+			this.domElement.ownerDocument.removeEventListener( 'pointermove', this._onPointerMove );
+			this.domElement.ownerDocument.removeEventListener( 'pointerup', this._onPointerUp );
+
+			this.traverse( function ( child ) {
+
+				if ( child.geometry ) child.geometry.dispose();
+				if ( child.material ) child.material.dispose();
+
+			} );
+
+		}
+
+		// Set current object
+		attach( object ) {
+
+			this.object = object;
+			this.visible = true;
+
+			return this;
+
+		}
+
+		// Detatch from object
+		detach() {
+
+			this.object = undefined;
+			this.visible = false;
+			this.axis = null;
+
+			return this;
+
+		}
+
+		// TODO: deprecate
+
+		getMode() {
+
+			return this.mode;
+
+		}
+
+		setMode( mode ) {
+
+			this.mode = mode;
+
+		}
+
+		setTranslationSnap( translationSnap ) {
+
+			this.translationSnap = translationSnap;
+
+		}
+
+		setRotationSnap( rotationSnap ) {
+
+			this.rotationSnap = rotationSnap;
+
+		}
+
+		setScaleSnap( scaleSnap ) {
+
+			this.scaleSnap = scaleSnap;
+
+		}
+
+		setSize( size ) {
+
+			this.size = size;
+
+		}
+
+		setSpace( space ) {
+
+			this.space = space;
+
+		}
+
+		update() {
+
+			console.warn( 'THREE.TransformControls: update function has no more functionality and therefore has been deprecated.' );
+
+		}
+
+	}
+
+	TransformControls.prototype.isTransformControls = true;
+
+	// mouse / touch event handlers
+
+	function getPointer( event ) {
+
+		if ( this.domElement.ownerDocument.pointerLockElement ) {
+
+			return {
+				x: 0,
+				y: 0,
+				button: event.button
+			};
+
+		} else {
+
+			const pointer = event.changedTouches ? event.changedTouches[ 0 ] : event;
+
+			const rect = this.domElement.getBoundingClientRect();
+
+			return {
+				x: ( pointer.clientX - rect.left ) / rect.width * 2 - 1,
+				y: - ( pointer.clientY - rect.top ) / rect.height * 2 + 1,
+				button: event.button
+			};
+
+		}
+
+	}
+
+	function onPointerHover( event ) {
+
+		if ( ! this.enabled ) return;
+
+		switch ( event.pointerType ) {
+
+			case 'mouse':
+			case 'pen':
+				this.pointerHover( this._getPointer( event ) );
+				break;
+
+		}
+
+	}
+
+	function onPointerDown( event ) {
+
+		if ( ! this.enabled ) return;
+
+		this.domElement.style.touchAction = 'none'; // disable touch scroll
+		this.domElement.ownerDocument.addEventListener( 'pointermove', this._onPointerMove );
+
+		this.pointerHover( this._getPointer( event ) );
+		this.pointerDown( this._getPointer( event ) );
+
+	}
+
+	function onPointerMove( event ) {
+
+		if ( ! this.enabled ) return;
+
+		this.pointerMove( this._getPointer( event ) );
+
+	}
+
+	function onPointerUp( event ) {
+
+		if ( ! this.enabled ) return;
+
+		this.domElement.style.touchAction = '';
+		this.domElement.ownerDocument.removeEventListener( 'pointermove', this._onPointerMove );
+
+		this.pointerUp( this._getPointer( event ) );
+
+	}
+
+	function intersectObjectWithRay( object, raycaster, includeInvisible ) {
+
+		const allIntersections = raycaster.intersectObject( object, true );
+
+		for ( let i = 0; i < allIntersections.length; i ++ ) {
+
+			if ( allIntersections[ i ].object.visible || includeInvisible ) {
+
+				return allIntersections[ i ];
+
+			}
+
+		}
+
+		return false;
+
+	}
+
+	//
+
+	// Reusable utility variables
+
+	const _tempEuler = new Euler();
+	const _alignVector = new Vector3( 0, 1, 0 );
+	const _zeroVector = new Vector3( 0, 0, 0 );
+	const _lookAtMatrix = new Matrix4();
+	const _tempQuaternion2 = new Quaternion();
+	const _identityQuaternion = new Quaternion();
+	const _dirVector = new Vector3();
+	const _tempMatrix = new Matrix4();
+
+	const _unitX = new Vector3( 1, 0, 0 );
+	const _unitY = new Vector3( 0, 1, 0 );
+	const _unitZ = new Vector3( 0, 0, 1 );
+
+	const _v1 = new Vector3();
+	const _v2 = new Vector3();
+	const _v3 = new Vector3();
+
+	class TransformControlsGizmo extends Object3D {
+
+		constructor() {
+
+			super();
+
+			this.type = 'TransformControlsGizmo';
+
+			// shared materials
+
+			const gizmoMaterial = new MeshBasicMaterial( {
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+				side: DoubleSide,
+				fog: false,
+				toneMapped: false
+			} );
+
+			const gizmoLineMaterial = new LineBasicMaterial( {
+				depthTest: false,
+				depthWrite: false,
+				transparent: true,
+				linewidth: 1,
+				fog: false,
+				toneMapped: false
+			} );
+
+			// Make unique material for each axis/color
+
+			const matInvisible = gizmoMaterial.clone();
+			matInvisible.opacity = 0.15;
+
+			const matHelper = gizmoMaterial.clone();
+			matHelper.opacity = 0.33;
+
+			const matRed = gizmoMaterial.clone();
+			matRed.color.set( 0xff0000 );
+
+			const matGreen = gizmoMaterial.clone();
+			matGreen.color.set( 0x00ff00 );
+
+			const matBlue = gizmoMaterial.clone();
+			matBlue.color.set( 0x0000ff );
+
+			const matWhiteTransparent = gizmoMaterial.clone();
+			matWhiteTransparent.opacity = 0.25;
+
+			const matYellowTransparent = matWhiteTransparent.clone();
+			matYellowTransparent.color.set( 0xffff00 );
+
+			const matCyanTransparent = matWhiteTransparent.clone();
+			matCyanTransparent.color.set( 0x00ffff );
+
+			const matMagentaTransparent = matWhiteTransparent.clone();
+			matMagentaTransparent.color.set( 0xff00ff );
+
+			const matYellow = gizmoMaterial.clone();
+			matYellow.color.set( 0xffff00 );
+
+			const matLineRed = gizmoLineMaterial.clone();
+			matLineRed.color.set( 0xff0000 );
+
+			const matLineGreen = gizmoLineMaterial.clone();
+			matLineGreen.color.set( 0x00ff00 );
+
+			const matLineBlue = gizmoLineMaterial.clone();
+			matLineBlue.color.set( 0x0000ff );
+
+			const matLineCyan = gizmoLineMaterial.clone();
+			matLineCyan.color.set( 0x00ffff );
+
+			const matLineMagenta = gizmoLineMaterial.clone();
+			matLineMagenta.color.set( 0xff00ff );
+
+			const matLineYellow = gizmoLineMaterial.clone();
+			matLineYellow.color.set( 0xffff00 );
+
+			const matLineGray = gizmoLineMaterial.clone();
+			matLineGray.color.set( 0x787878 );
+
+			const matLineYellowTransparent = matLineYellow.clone();
+			matLineYellowTransparent.opacity = 0.25;
+
+			// reusable geometry
+
+			const arrowGeometry = new CylinderGeometry( 0, 0.05, 0.2, 12, 1, false );
+
+			const scaleHandleGeometry = new BoxGeometry( 0.125, 0.125, 0.125 );
+
+			const lineGeometry = new BufferGeometry();
+			lineGeometry.setAttribute( 'position', new Float32BufferAttribute( [ 0, 0, 0,	1, 0, 0 ], 3 ) );
+
+			function CircleGeometry( radius, arc ) {
+
+				const geometry = new BufferGeometry( );
+				const vertices = [];
+
+				for ( let i = 0; i <= 64 * arc; ++ i ) {
+
+					vertices.push( 0, Math.cos( i / 32 * Math.PI ) * radius, Math.sin( i / 32 * Math.PI ) * radius );
+
+				}
+
+				geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+
+				return geometry;
+
+			}
+
+			// Special geometry for transform helper. If scaled with position vector it spans from [0,0,0] to position
+
+			function TranslateHelperGeometry() {
+
+				const geometry = new BufferGeometry();
+
+				geometry.setAttribute( 'position', new Float32BufferAttribute( [ 0, 0, 0, 1, 1, 1 ], 3 ) );
+
+				return geometry;
+
+			}
+
+			// Gizmo definitions - custom hierarchy definitions for setupGizmo() function
+
+			const gizmoTranslate = {
+				X: [
+					[ new Mesh( arrowGeometry, matRed ), [ 1, 0, 0 ], [ 0, 0, - Math.PI / 2 ], null, 'fwd' ],
+					[ new Mesh( arrowGeometry, matRed ), [ 1, 0, 0 ], [ 0, 0, Math.PI / 2 ], null, 'bwd' ],
+					[ new Line( lineGeometry, matLineRed ) ]
+				],
+				Y: [
+					[ new Mesh( arrowGeometry, matGreen ), [ 0, 1, 0 ], null, null, 'fwd' ],
+					[ new Mesh( arrowGeometry, matGreen ), [ 0, 1, 0 ], [ Math.PI, 0, 0 ], null, 'bwd' ],
+					[ new Line( lineGeometry, matLineGreen ), null, [ 0, 0, Math.PI / 2 ]]
+				],
+				Z: [
+					[ new Mesh( arrowGeometry, matBlue ), [ 0, 0, 1 ], [ Math.PI / 2, 0, 0 ], null, 'fwd' ],
+					[ new Mesh( arrowGeometry, matBlue ), [ 0, 0, 1 ], [ - Math.PI / 2, 0, 0 ], null, 'bwd' ],
+					[ new Line( lineGeometry, matLineBlue ), null, [ 0, - Math.PI / 2, 0 ]]
+				],
+				XYZ: [
+					[ new Mesh( new OctahedronGeometry( 0.1, 0 ), matWhiteTransparent.clone() ), [ 0, 0, 0 ], [ 0, 0, 0 ]]
+				],
+				XY: [
+					[ new Mesh( new PlaneGeometry( 0.295, 0.295 ), matYellowTransparent.clone() ), [ 0.15, 0.15, 0 ]],
+					[ new Line( lineGeometry, matLineYellow ), [ 0.18, 0.3, 0 ], null, [ 0.125, 1, 1 ]],
+					[ new Line( lineGeometry, matLineYellow ), [ 0.3, 0.18, 0 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]]
+				],
+				YZ: [
+					[ new Mesh( new PlaneGeometry( 0.295, 0.295 ), matCyanTransparent.clone() ), [ 0, 0.15, 0.15 ], [ 0, Math.PI / 2, 0 ]],
+					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.18, 0.3 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]],
+					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.3, 0.18 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
+				],
+				XZ: [
+					[ new Mesh( new PlaneGeometry( 0.295, 0.295 ), matMagentaTransparent.clone() ), [ 0.15, 0, 0.15 ], [ - Math.PI / 2, 0, 0 ]],
+					[ new Line( lineGeometry, matLineMagenta ), [ 0.18, 0, 0.3 ], null, [ 0.125, 1, 1 ]],
+					[ new Line( lineGeometry, matLineMagenta ), [ 0.3, 0, 0.18 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
+				]
+			};
+
+			const pickerTranslate = {
+				X: [
+					[ new Mesh( new CylinderGeometry( 0.2, 0, 1, 4, 1, false ), matInvisible ), [ 0.6, 0, 0 ], [ 0, 0, - Math.PI / 2 ]]
+				],
+				Y: [
+					[ new Mesh( new CylinderGeometry( 0.2, 0, 1, 4, 1, false ), matInvisible ), [ 0, 0.6, 0 ]]
+				],
+				Z: [
+					[ new Mesh( new CylinderGeometry( 0.2, 0, 1, 4, 1, false ), matInvisible ), [ 0, 0, 0.6 ], [ Math.PI / 2, 0, 0 ]]
+				],
+				XYZ: [
+					[ new Mesh( new OctahedronGeometry( 0.2, 0 ), matInvisible ) ]
+				],
+				XY: [
+					[ new Mesh( new PlaneGeometry( 0.4, 0.4 ), matInvisible ), [ 0.2, 0.2, 0 ]]
+				],
+				YZ: [
+					[ new Mesh( new PlaneGeometry( 0.4, 0.4 ), matInvisible ), [ 0, 0.2, 0.2 ], [ 0, Math.PI / 2, 0 ]]
+				],
+				XZ: [
+					[ new Mesh( new PlaneGeometry( 0.4, 0.4 ), matInvisible ), [ 0.2, 0, 0.2 ], [ - Math.PI / 2, 0, 0 ]]
+				]
+			};
+
+			const helperTranslate = {
+				START: [
+					[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
+				],
+				END: [
+					[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
+				],
+				DELTA: [
+					[ new Line( TranslateHelperGeometry(), matHelper ), null, null, null, 'helper' ]
+				],
+				X: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
+				],
+				Y: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ 0, - 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
+				],
+				Z: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, - 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
+				]
+			};
+
+			const gizmoRotate = {
+				X: [
+					[ new Line( CircleGeometry( 1, 0.5 ), matLineRed ) ],
+					[ new Mesh( new OctahedronGeometry( 0.04, 0 ), matRed ), [ 0, 0, 0.99 ], null, [ 1, 3, 1 ]],
+				],
+				Y: [
+					[ new Line( CircleGeometry( 1, 0.5 ), matLineGreen ), null, [ 0, 0, - Math.PI / 2 ]],
+					[ new Mesh( new OctahedronGeometry( 0.04, 0 ), matGreen ), [ 0, 0, 0.99 ], null, [ 3, 1, 1 ]],
+				],
+				Z: [
+					[ new Line( CircleGeometry( 1, 0.5 ), matLineBlue ), null, [ 0, Math.PI / 2, 0 ]],
+					[ new Mesh( new OctahedronGeometry( 0.04, 0 ), matBlue ), [ 0.99, 0, 0 ], null, [ 1, 3, 1 ]],
+				],
+				E: [
+					[ new Line( CircleGeometry( 1.25, 1 ), matLineYellowTransparent ), null, [ 0, Math.PI / 2, 0 ]],
+					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ 1.17, 0, 0 ], [ 0, 0, - Math.PI / 2 ], [ 1, 1, 0.001 ]],
+					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ - 1.17, 0, 0 ], [ 0, 0, Math.PI / 2 ], [ 1, 1, 0.001 ]],
+					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ 0, - 1.17, 0 ], [ Math.PI, 0, 0 ], [ 1, 1, 0.001 ]],
+					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ 0, 1.17, 0 ], [ 0, 0, 0 ], [ 1, 1, 0.001 ]],
+				],
+				XYZE: [
+					[ new Line( CircleGeometry( 1, 1 ), matLineGray ), null, [ 0, Math.PI / 2, 0 ]]
+				]
+			};
+
+			const helperRotate = {
+				AXIS: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
+				]
+			};
+
+			const pickerRotate = {
+				X: [
+					[ new Mesh( new TorusGeometry( 1, 0.1, 4, 24 ), matInvisible ), [ 0, 0, 0 ], [ 0, - Math.PI / 2, - Math.PI / 2 ]],
+				],
+				Y: [
+					[ new Mesh( new TorusGeometry( 1, 0.1, 4, 24 ), matInvisible ), [ 0, 0, 0 ], [ Math.PI / 2, 0, 0 ]],
+				],
+				Z: [
+					[ new Mesh( new TorusGeometry( 1, 0.1, 4, 24 ), matInvisible ), [ 0, 0, 0 ], [ 0, 0, - Math.PI / 2 ]],
+				],
+				E: [
+					[ new Mesh( new TorusGeometry( 1.25, 0.1, 2, 24 ), matInvisible ) ]
+				],
+				XYZE: [
+					[ new Mesh( new SphereGeometry( 0.7, 10, 8 ), matInvisible ) ]
+				]
+			};
+
+			const gizmoScale = {
+				X: [
+					[ new Mesh( scaleHandleGeometry, matRed ), [ 0.8, 0, 0 ], [ 0, 0, - Math.PI / 2 ]],
+					[ new Line( lineGeometry, matLineRed ), null, null, [ 0.8, 1, 1 ]]
+				],
+				Y: [
+					[ new Mesh( scaleHandleGeometry, matGreen ), [ 0, 0.8, 0 ]],
+					[ new Line( lineGeometry, matLineGreen ), null, [ 0, 0, Math.PI / 2 ], [ 0.8, 1, 1 ]]
+				],
+				Z: [
+					[ new Mesh( scaleHandleGeometry, matBlue ), [ 0, 0, 0.8 ], [ Math.PI / 2, 0, 0 ]],
+					[ new Line( lineGeometry, matLineBlue ), null, [ 0, - Math.PI / 2, 0 ], [ 0.8, 1, 1 ]]
+				],
+				XY: [
+					[ new Mesh( scaleHandleGeometry, matYellowTransparent ), [ 0.85, 0.85, 0 ], null, [ 2, 2, 0.2 ]],
+					[ new Line( lineGeometry, matLineYellow ), [ 0.855, 0.98, 0 ], null, [ 0.125, 1, 1 ]],
+					[ new Line( lineGeometry, matLineYellow ), [ 0.98, 0.855, 0 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]]
+				],
+				YZ: [
+					[ new Mesh( scaleHandleGeometry, matCyanTransparent ), [ 0, 0.85, 0.85 ], null, [ 0.2, 2, 2 ]],
+					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.855, 0.98 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]],
+					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.98, 0.855 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
+				],
+				XZ: [
+					[ new Mesh( scaleHandleGeometry, matMagentaTransparent ), [ 0.85, 0, 0.85 ], null, [ 2, 0.2, 2 ]],
+					[ new Line( lineGeometry, matLineMagenta ), [ 0.855, 0, 0.98 ], null, [ 0.125, 1, 1 ]],
+					[ new Line( lineGeometry, matLineMagenta ), [ 0.98, 0, 0.855 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
+				],
+				XYZX: [
+					[ new Mesh( new BoxGeometry( 0.125, 0.125, 0.125 ), matWhiteTransparent.clone() ), [ 1.1, 0, 0 ]],
+				],
+				XYZY: [
+					[ new Mesh( new BoxGeometry( 0.125, 0.125, 0.125 ), matWhiteTransparent.clone() ), [ 0, 1.1, 0 ]],
+				],
+				XYZZ: [
+					[ new Mesh( new BoxGeometry( 0.125, 0.125, 0.125 ), matWhiteTransparent.clone() ), [ 0, 0, 1.1 ]],
+				]
+			};
+
+			const pickerScale = {
+				X: [
+					[ new Mesh( new CylinderGeometry( 0.2, 0, 0.8, 4, 1, false ), matInvisible ), [ 0.5, 0, 0 ], [ 0, 0, - Math.PI / 2 ]]
+				],
+				Y: [
+					[ new Mesh( new CylinderGeometry( 0.2, 0, 0.8, 4, 1, false ), matInvisible ), [ 0, 0.5, 0 ]]
+				],
+				Z: [
+					[ new Mesh( new CylinderGeometry( 0.2, 0, 0.8, 4, 1, false ), matInvisible ), [ 0, 0, 0.5 ], [ Math.PI / 2, 0, 0 ]]
+				],
+				XY: [
+					[ new Mesh( scaleHandleGeometry, matInvisible ), [ 0.85, 0.85, 0 ], null, [ 3, 3, 0.2 ]],
+				],
+				YZ: [
+					[ new Mesh( scaleHandleGeometry, matInvisible ), [ 0, 0.85, 0.85 ], null, [ 0.2, 3, 3 ]],
+				],
+				XZ: [
+					[ new Mesh( scaleHandleGeometry, matInvisible ), [ 0.85, 0, 0.85 ], null, [ 3, 0.2, 3 ]],
+				],
+				XYZX: [
+					[ new Mesh( new BoxGeometry( 0.2, 0.2, 0.2 ), matInvisible ), [ 1.1, 0, 0 ]],
+				],
+				XYZY: [
+					[ new Mesh( new BoxGeometry( 0.2, 0.2, 0.2 ), matInvisible ), [ 0, 1.1, 0 ]],
+				],
+				XYZZ: [
+					[ new Mesh( new BoxGeometry( 0.2, 0.2, 0.2 ), matInvisible ), [ 0, 0, 1.1 ]],
+				]
+			};
+
+			const helperScale = {
+				X: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
+				],
+				Y: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ 0, - 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
+				],
+				Z: [
+					[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, - 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
+				]
+			};
+
+			// Creates an Object3D with gizmos described in custom hierarchy definition.
+
+			function setupGizmo( gizmoMap ) {
+
+				const gizmo = new Object3D();
+
+				for ( const name in gizmoMap ) {
+
+					for ( let i = gizmoMap[ name ].length; i --; ) {
+
+						const object = gizmoMap[ name ][ i ][ 0 ].clone();
+						const position = gizmoMap[ name ][ i ][ 1 ];
+						const rotation = gizmoMap[ name ][ i ][ 2 ];
+						const scale = gizmoMap[ name ][ i ][ 3 ];
+						const tag = gizmoMap[ name ][ i ][ 4 ];
+
+						// name and tag properties are essential for picking and updating logic.
+						object.name = name;
+						object.tag = tag;
+
+						if ( position ) {
+
+							object.position.set( position[ 0 ], position[ 1 ], position[ 2 ] );
+
+						}
+
+						if ( rotation ) {
+
+							object.rotation.set( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] );
+
+						}
+
+						if ( scale ) {
+
+							object.scale.set( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
+
+						}
+
+						object.updateMatrix();
+
+						const tempGeometry = object.geometry.clone();
+						tempGeometry.applyMatrix4( object.matrix );
+						object.geometry = tempGeometry;
+						object.renderOrder = Infinity;
+
+						object.position.set( 0, 0, 0 );
+						object.rotation.set( 0, 0, 0 );
+						object.scale.set( 1, 1, 1 );
+
+						gizmo.add( object );
+
+					}
+
+				}
+
+				return gizmo;
+
+			}
+
+			// Gizmo creation
+
+			this.gizmo = {};
+			this.picker = {};
+			this.helper = {};
+
+			this.add( this.gizmo[ 'translate' ] = setupGizmo( gizmoTranslate ) );
+			this.add( this.gizmo[ 'rotate' ] = setupGizmo( gizmoRotate ) );
+			this.add( this.gizmo[ 'scale' ] = setupGizmo( gizmoScale ) );
+			this.add( this.picker[ 'translate' ] = setupGizmo( pickerTranslate ) );
+			this.add( this.picker[ 'rotate' ] = setupGizmo( pickerRotate ) );
+			this.add( this.picker[ 'scale' ] = setupGizmo( pickerScale ) );
+			this.add( this.helper[ 'translate' ] = setupGizmo( helperTranslate ) );
+			this.add( this.helper[ 'rotate' ] = setupGizmo( helperRotate ) );
+			this.add( this.helper[ 'scale' ] = setupGizmo( helperScale ) );
+
+			// Pickers should be hidden always
+
+			this.picker[ 'translate' ].visible = false;
+			this.picker[ 'rotate' ].visible = false;
+			this.picker[ 'scale' ].visible = false;
+
+		}
+
+		// updateMatrixWorld will update transformations and appearance of individual handles
+
+		updateMatrixWorld( force ) {
+
+			const space = ( this.mode === 'scale' ) ? this.space : 'local'; // scale always oriented to local rotation
+
+			const quaternion = ( space === 'local' ) ? this.worldQuaternion : _identityQuaternion;
+
+			// Show only gizmos for current transform mode
+
+			this.gizmo[ 'translate' ].visible = this.mode === 'translate';
+			this.gizmo[ 'rotate' ].visible = this.mode === 'rotate';
+			this.gizmo[ 'scale' ].visible = this.mode === 'scale';
+
+			this.helper[ 'translate' ].visible = this.mode === 'translate';
+			this.helper[ 'rotate' ].visible = this.mode === 'rotate';
+			this.helper[ 'scale' ].visible = this.mode === 'scale';
+
+
+			let handles = [];
+			handles = handles.concat( this.picker[ this.mode ].children );
+			handles = handles.concat( this.gizmo[ this.mode ].children );
+			handles = handles.concat( this.helper[ this.mode ].children );
+
+			for ( let i = 0; i < handles.length; i ++ ) {
+
+				const handle = handles[ i ];
+
+				// hide aligned to camera
+
+				handle.visible = true;
+				handle.rotation.set( 0, 0, 0 );
+				handle.position.copy( this.worldPosition );
+
+				let factor;
+
+				if ( this.camera.isOrthographicCamera ) {
+
+					factor = ( this.camera.top - this.camera.bottom ) / this.camera.zoom;
+
+				} else {
+
+					factor = this.worldPosition.distanceTo( this.cameraPosition ) * Math.min( 1.9 * Math.tan( Math.PI * this.camera.fov / 360 ) / this.camera.zoom, 7 );
+
+				}
+
+				handle.scale.set( 1, 1, 1 ).multiplyScalar( factor * this.size / 7 );
+
+				// TODO: simplify helpers and consider decoupling from gizmo
+
+				if ( handle.tag === 'helper' ) {
+
+					handle.visible = false;
+
+					if ( handle.name === 'AXIS' ) {
+
+						handle.position.copy( this.worldPositionStart );
+						handle.visible = !! this.axis;
+
+						if ( this.axis === 'X' ) {
+
+							_tempQuaternion.setFromEuler( _tempEuler.set( 0, 0, 0 ) );
+							handle.quaternion.copy( quaternion ).multiply( _tempQuaternion );
+
+							if ( Math.abs( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) ) > 0.9 ) {
+
+								handle.visible = false;
+
+							}
+
+						}
+
+						if ( this.axis === 'Y' ) {
+
+							_tempQuaternion.setFromEuler( _tempEuler.set( 0, 0, Math.PI / 2 ) );
+							handle.quaternion.copy( quaternion ).multiply( _tempQuaternion );
+
+							if ( Math.abs( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) ) > 0.9 ) {
+
+								handle.visible = false;
+
+							}
+
+						}
+
+						if ( this.axis === 'Z' ) {
+
+							_tempQuaternion.setFromEuler( _tempEuler.set( 0, Math.PI / 2, 0 ) );
+							handle.quaternion.copy( quaternion ).multiply( _tempQuaternion );
+
+							if ( Math.abs( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) ) > 0.9 ) {
+
+								handle.visible = false;
+
+							}
+
+						}
+
+						if ( this.axis === 'XYZE' ) {
+
+							_tempQuaternion.setFromEuler( _tempEuler.set( 0, Math.PI / 2, 0 ) );
+							_alignVector.copy( this.rotationAxis );
+							handle.quaternion.setFromRotationMatrix( _lookAtMatrix.lookAt( _zeroVector, _alignVector, _unitY ) );
+							handle.quaternion.multiply( _tempQuaternion );
+							handle.visible = this.dragging;
+
+						}
+
+						if ( this.axis === 'E' ) {
+
+							handle.visible = false;
+
+						}
+
+
+					} else if ( handle.name === 'START' ) {
+
+						handle.position.copy( this.worldPositionStart );
+						handle.visible = this.dragging;
+
+					} else if ( handle.name === 'END' ) {
+
+						handle.position.copy( this.worldPosition );
+						handle.visible = this.dragging;
+
+					} else if ( handle.name === 'DELTA' ) {
+
+						handle.position.copy( this.worldPositionStart );
+						handle.quaternion.copy( this.worldQuaternionStart );
+						_tempVector.set( 1e-10, 1e-10, 1e-10 ).add( this.worldPositionStart ).sub( this.worldPosition ).multiplyScalar( - 1 );
+						_tempVector.applyQuaternion( this.worldQuaternionStart.clone().invert() );
+						handle.scale.copy( _tempVector );
+						handle.visible = this.dragging;
+
+					} else {
+
+						handle.quaternion.copy( quaternion );
+
+						if ( this.dragging ) {
+
+							handle.position.copy( this.worldPositionStart );
+
+						} else {
+
+							handle.position.copy( this.worldPosition );
+
+						}
+
+						if ( this.axis ) {
+
+							handle.visible = this.axis.search( handle.name ) !== - 1;
+
+						}
+
+					}
+
+					// If updating helper, skip rest of the loop
+					continue;
+
+				}
+
+				// Align handles to current local or world rotation
+
+				handle.quaternion.copy( quaternion );
+
+				if ( this.mode === 'translate' || this.mode === 'scale' ) {
+
+					// Hide translate and scale axis facing the camera
+
+					const AXIS_HIDE_TRESHOLD = 0.99;
+					const PLANE_HIDE_TRESHOLD = 0.2;
+					const AXIS_FLIP_TRESHOLD = 0.0;
+
+					if ( handle.name === 'X' || handle.name === 'XYZX' ) {
+
+						if ( Math.abs( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) ) > AXIS_HIDE_TRESHOLD ) {
+
+							handle.scale.set( 1e-10, 1e-10, 1e-10 );
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name === 'Y' || handle.name === 'XYZY' ) {
+
+						if ( Math.abs( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) ) > AXIS_HIDE_TRESHOLD ) {
+
+							handle.scale.set( 1e-10, 1e-10, 1e-10 );
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name === 'Z' || handle.name === 'XYZZ' ) {
+
+						if ( Math.abs( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) ) > AXIS_HIDE_TRESHOLD ) {
+
+							handle.scale.set( 1e-10, 1e-10, 1e-10 );
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name === 'XY' ) {
+
+						if ( Math.abs( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) ) < PLANE_HIDE_TRESHOLD ) {
+
+							handle.scale.set( 1e-10, 1e-10, 1e-10 );
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name === 'YZ' ) {
+
+						if ( Math.abs( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) ) < PLANE_HIDE_TRESHOLD ) {
+
+							handle.scale.set( 1e-10, 1e-10, 1e-10 );
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name === 'XZ' ) {
+
+						if ( Math.abs( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) ) < PLANE_HIDE_TRESHOLD ) {
+
+							handle.scale.set( 1e-10, 1e-10, 1e-10 );
+							handle.visible = false;
+
+						}
+
+					}
+
+					// Flip translate and scale axis ocluded behind another axis
+
+					if ( handle.name.search( 'X' ) !== - 1 ) {
+
+						if ( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) < AXIS_FLIP_TRESHOLD ) {
+
+							if ( handle.tag === 'fwd' ) {
+
+								handle.visible = false;
+
+							} else {
+
+								handle.scale.x *= - 1;
+
+							}
+
+						} else if ( handle.tag === 'bwd' ) {
+
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name.search( 'Y' ) !== - 1 ) {
+
+						if ( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) < AXIS_FLIP_TRESHOLD ) {
+
+							if ( handle.tag === 'fwd' ) {
+
+								handle.visible = false;
+
+							} else {
+
+								handle.scale.y *= - 1;
+
+							}
+
+						} else if ( handle.tag === 'bwd' ) {
+
+							handle.visible = false;
+
+						}
+
+					}
+
+					if ( handle.name.search( 'Z' ) !== - 1 ) {
+
+						if ( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) < AXIS_FLIP_TRESHOLD ) {
+
+							if ( handle.tag === 'fwd' ) {
+
+								handle.visible = false;
+
+							} else {
+
+								handle.scale.z *= - 1;
+
+							}
+
+						} else if ( handle.tag === 'bwd' ) {
+
+							handle.visible = false;
+
+						}
+
+					}
+
+				} else if ( this.mode === 'rotate' ) {
+
+					// Align handles to current local or world rotation
+
+					_tempQuaternion2.copy( quaternion );
+					_alignVector.copy( this.eye ).applyQuaternion( _tempQuaternion.copy( quaternion ).invert() );
+
+					if ( handle.name.search( 'E' ) !== - 1 ) {
+
+						handle.quaternion.setFromRotationMatrix( _lookAtMatrix.lookAt( this.eye, _zeroVector, _unitY ) );
+
+					}
+
+					if ( handle.name === 'X' ) {
+
+						_tempQuaternion.setFromAxisAngle( _unitX, Math.atan2( - _alignVector.y, _alignVector.z ) );
+						_tempQuaternion.multiplyQuaternions( _tempQuaternion2, _tempQuaternion );
+						handle.quaternion.copy( _tempQuaternion );
+
+					}
+
+					if ( handle.name === 'Y' ) {
+
+						_tempQuaternion.setFromAxisAngle( _unitY, Math.atan2( _alignVector.x, _alignVector.z ) );
+						_tempQuaternion.multiplyQuaternions( _tempQuaternion2, _tempQuaternion );
+						handle.quaternion.copy( _tempQuaternion );
+
+					}
+
+					if ( handle.name === 'Z' ) {
+
+						_tempQuaternion.setFromAxisAngle( _unitZ, Math.atan2( _alignVector.y, _alignVector.x ) );
+						_tempQuaternion.multiplyQuaternions( _tempQuaternion2, _tempQuaternion );
+						handle.quaternion.copy( _tempQuaternion );
+
+					}
+
+				}
+
+				// Hide disabled axes
+				handle.visible = handle.visible && ( handle.name.indexOf( 'X' ) === - 1 || this.showX );
+				handle.visible = handle.visible && ( handle.name.indexOf( 'Y' ) === - 1 || this.showY );
+				handle.visible = handle.visible && ( handle.name.indexOf( 'Z' ) === - 1 || this.showZ );
+				handle.visible = handle.visible && ( handle.name.indexOf( 'E' ) === - 1 || ( this.showX && this.showY && this.showZ ) );
+
+				// highlight selected axis
+
+				handle.material._opacity = handle.material._opacity || handle.material.opacity;
+				handle.material._color = handle.material._color || handle.material.color.clone();
+
+				handle.material.color.copy( handle.material._color );
+				handle.material.opacity = handle.material._opacity;
+
+				if ( ! this.enabled ) {
+
+					handle.material.opacity *= 0.5;
+					handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
+
+				} else if ( this.axis ) {
+
+					if ( handle.name === this.axis ) {
+
+						handle.material.opacity = 1.0;
+						handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
+
+					} else if ( this.axis.split( '' ).some( function ( a ) {
+
+						return handle.name === a;
+
+					} ) ) {
+
+						handle.material.opacity = 1.0;
+						handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
+
+					} else {
+
+						handle.material.opacity *= 0.25;
+						handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
+
+					}
+
+				}
+
+			}
+
+			super.updateMatrixWorld( force );
+
+		}
+
+	}
+
+	TransformControlsGizmo.prototype.isTransformControlsGizmo = true;
+
+	//
+
+	class TransformControlsPlane extends Mesh {
+
+		constructor() {
+
+			super(
+				new PlaneGeometry( 100000, 100000, 2, 2 ),
+				new MeshBasicMaterial( { visible: false, wireframe: true, side: DoubleSide, transparent: true, opacity: 0.1, toneMapped: false } )
+			);
+
+			this.type = 'TransformControlsPlane';
+
+		}
+
+		updateMatrixWorld( force ) {
+
+			let space = this.space;
+
+			this.position.copy( this.worldPosition );
+
+			if ( this.mode === 'scale' ) space = 'local'; // scale always oriented to local rotation
+
+			_v1.copy( _unitX ).applyQuaternion( space === 'local' ? this.worldQuaternion : _identityQuaternion );
+			_v2.copy( _unitY ).applyQuaternion( space === 'local' ? this.worldQuaternion : _identityQuaternion );
+			_v3.copy( _unitZ ).applyQuaternion( space === 'local' ? this.worldQuaternion : _identityQuaternion );
+
+			// Align the plane for current transform mode, axis and space.
+
+			_alignVector.copy( _v2 );
+
+			switch ( this.mode ) {
+
+				case 'translate':
+				case 'scale':
+					switch ( this.axis ) {
+
+						case 'X':
+							_alignVector.copy( this.eye ).cross( _v1 );
+							_dirVector.copy( _v1 ).cross( _alignVector );
+							break;
+						case 'Y':
+							_alignVector.copy( this.eye ).cross( _v2 );
+							_dirVector.copy( _v2 ).cross( _alignVector );
+							break;
+						case 'Z':
+							_alignVector.copy( this.eye ).cross( _v3 );
+							_dirVector.copy( _v3 ).cross( _alignVector );
+							break;
+						case 'XY':
+							_dirVector.copy( _v3 );
+							break;
+						case 'YZ':
+							_dirVector.copy( _v1 );
+							break;
+						case 'XZ':
+							_alignVector.copy( _v3 );
+							_dirVector.copy( _v2 );
+							break;
+						case 'XYZ':
+						case 'E':
+							_dirVector.set( 0, 0, 0 );
+							break;
+
+					}
+
+					break;
+				case 'rotate':
+				default:
+					// special case for rotate
+					_dirVector.set( 0, 0, 0 );
+
+			}
+
+			if ( _dirVector.length() === 0 ) {
+
+				// If in rotate mode, make the plane parallel to camera
+				this.quaternion.copy( this.cameraQuaternion );
+
+			} else {
+
+				_tempMatrix.lookAt( _tempVector.set( 0, 0, 0 ), _dirVector, _alignVector );
+
+				this.quaternion.setFromRotationMatrix( _tempMatrix );
+
+			}
+
+			super.updateMatrixWorld( force );
+
+		}
+
+	}
+
+	TransformControlsPlane.prototype.isTransformControlsPlane = true;
+
+	class IfcPlane$1 extends IfcComponent {
+	    constructor(context, origin, normal, onStartDragging, onEndDragging) {
+	        super(context);
+	        this.removeFromScene = () => {
+	            const scene = this.context.getScene();
+	            scene.remove(this.helper);
+	            scene.remove(this.controls);
+	        };
+	        this.context = context;
+	        this.plane = new Plane();
+	        this.planeMesh = this.getPlaneMesh();
+	        this.visible = true;
+	        this.normal = normal;
+	        this.origin = origin;
+	        this.helper = this.createHelper();
+	        this.controls = this.newTransformControls();
+	        this.setupEvents(onStartDragging, onEndDragging);
+	        this.plane.setFromNormalAndCoplanarPoint(normal.negate(), origin);
+	    }
+	    setVisibility(visible) {
+	        this.visible = visible;
+	        this.helper.visible = visible;
+	        this.controls.visible = visible;
+	    }
+	    newTransformControls() {
+	        const camera = this.context.getCamera();
+	        const container = this.context.getDomElement();
+	        const controls = new TransformControls(camera, container);
+	        this.initializeControls(controls);
+	        const scene = this.context.getScene();
+	        scene.add(controls);
+	        return controls;
+	    }
+	    initializeControls(controls) {
+	        controls.attach(this.helper);
+	        controls.showX = false;
+	        controls.showY = false;
+	        controls.setSpace('local');
+	    }
+	    setupEvents(onStart, onEnd) {
+	        this.controls.addEventListener('change', () => {
+	            this.plane.setFromNormalAndCoplanarPoint(this.normal, this.helper.position);
+	        });
+	        this.controls.addEventListener('dragging-changed', (event) => {
+	            this.visible = !event.value;
+	            this.context.toggleCameraControls(this.visible);
+	            if (event.value)
+	                onStart();
+	            else
+	                onEnd();
+	        });
+	    }
+	    createHelper() {
+	        const helper = new Object3D();
+	        helper.lookAt(this.normal);
+	        helper.position.copy(this.origin);
+	        const scene = this.context.getScene();
+	        scene.add(helper);
+	        helper.add(this.planeMesh);
+	        return helper;
+	    }
+	    getPlaneMesh() {
+	        const geom = new PlaneGeometry(5, 5, 1);
+	        const mat = new MeshBasicMaterial({
+	            color: 0xffff00,
+	            side: DoubleSide,
+	            transparent: true,
+	            opacity: 0.2
+	        });
+	        return new Mesh(geom, mat);
+	    }
+	}
+
+	class IfcClipper extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.createPlane = () => {
+	            if (!this.enabled)
+	                return;
+	            const intersects = this.context.castRayIfc();
+	            this.createPlaneFromIntersection(intersects);
+	            this.intersection = undefined;
+	        };
+	        this.deletePlane = () => {
+	            if (!this.enabled)
+	                return;
+	            const plane = this.pickPlane();
+	            if (!plane)
+	                return;
+	            const index = this.planes.indexOf(plane);
+	            if (index === -1)
+	                return;
+	            plane.removeFromScene();
+	            this.planes.splice(index, 1);
+	            this.context.removeClippingPlane(plane.plane);
+	            this.updateMaterials();
+	        };
+	        this.pickPlane = () => {
+	            const planeMeshes = this.planes.map((p) => p.planeMesh);
+	            const intersects = this.context.castRay(planeMeshes);
+	            if (intersects.length <= 0)
+	                return null;
+	            return this.planes.find((p) => p.planeMesh === intersects[0].object);
+	        };
+	        this.createPlaneFromIntersection = (intersection) => {
+	            var _a;
+	            const constant = intersection.point.distanceTo(new Vector3(0, 0, 0));
+	            const normal = (_a = intersection.face) === null || _a === void 0 ? void 0 : _a.normal;
+	            if (!constant || !normal)
+	                return;
+	            const normalMatrix = new Matrix3().getNormalMatrix(intersection.object.matrixWorld);
+	            const worldNormal = normal.clone().applyMatrix3(normalMatrix).normalize();
+	            const plane = this.newPlane(intersection, worldNormal);
+	            this.planes.push(plane);
+	            this.context.addClippingPlane(plane.plane);
+	            this.updateMaterials();
+	        };
+	        this.activateDragging = () => {
+	            this.dragging = true;
+	        };
+	        this.deactivateDragging = () => {
+	            this.dragging = false;
+	        };
+	        this.updateMaterials = () => {
+	            // Applying clipping to IfcObjects only. This could be improved.
+	            this.context.items.ifcModels.forEach((obj) => {
+	                const mesh = obj;
+	                if (mesh.material)
+	                    this.updateMaterial(mesh);
+	            });
+	        };
+	        this.context = context;
+	        this.enabled = false;
+	        this.dragging = false;
+	        this.planes = [];
+	    }
+	    get active() {
+	        return this.enabled;
+	    }
+	    set active(state) {
+	        console.log(`Clipping Active: ${state}`);
+	        this.enabled = state;
+	        this.planes.forEach((plane) => plane.setVisibility(state));
+	        this.updateMaterials();
+	    }
+	    newPlane(intersection, worldNormal) {
+	        return new IfcPlane$1(this.context, intersection.point, worldNormal, this.activateDragging, this.deactivateDragging);
+	    }
+	    updateMaterial(mesh) {
+	        const activePlanes = this.planes.filter((plane) => plane.visible);
+	        if (!Array.isArray(mesh.material)) {
+	            mesh.material.clippingPlanes = activePlanes.map((e) => e.plane);
+	            return;
+	        }
+	        mesh.material.forEach((m) => {
+	            m.clippingPlanes = activePlanes.map((e) => e.plane);
+	        });
+	    }
+	}
+
+	class IfcGrid$1 extends IfcComponent {
+	    constructor(context, size, divisions, colorCenterLine, colorGrid) {
+	        super(context);
+	        this.grid = new GridHelper(size, divisions, colorCenterLine, colorGrid);
+	        this.grid.material.depthTest = false;
+	        this.grid.renderOrder = 0;
+	        const scene = context.getScene();
+	        scene.add(this.grid);
+	    }
+	}
+
+	class IfcAxes extends IfcComponent {
+	    constructor(context, size) {
+	        super(context);
+	        this.axes = new AxesHelper(size);
+	        this.axes.material.depthTest = false;
+	        this.axes.renderOrder = 2;
+	        const scene = context.getScene();
+	        scene.add(this.axes);
+	    }
+	}
+
+	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+	var stats_min$1 = {exports: {}};
+
+	(function (module, exports) {
+	// stats.js - http://github.com/mrdoob/stats.js
+	(function(f,e){module.exports=e();})(commonjsGlobal,function(){var f=function(){function e(a){c.appendChild(a.dom);return a}function u(a){for(var d=0;d<c.children.length;d++)c.children[d].style.display=d===a?"block":"none";l=a;}var l=0,c=document.createElement("div");c.style.cssText="position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000";c.addEventListener("click",function(a){a.preventDefault();
+	u(++l%c.children.length);},!1);var k=(performance||Date).now(),g=k,a=0,r=e(new f.Panel("FPS","#0ff","#002")),h=e(new f.Panel("MS","#0f0","#020"));if(self.performance&&self.performance.memory)var t=e(new f.Panel("MB","#f08","#201"));u(0);return {REVISION:16,dom:c,addPanel:e,showPanel:u,begin:function(){k=(performance||Date).now();},end:function(){a++;var c=(performance||Date).now();h.update(c-k,200);if(c>g+1E3&&(r.update(1E3*a/(c-g),100),g=c,a=0,t)){var d=performance.memory;t.update(d.usedJSHeapSize/
+	1048576,d.jsHeapSizeLimit/1048576);}return c},update:function(){k=this.end();},domElement:c,setMode:u}};f.Panel=function(e,f,l){var c=Infinity,k=0,g=Math.round,a=g(window.devicePixelRatio||1),r=80*a,h=48*a,t=3*a,v=2*a,d=3*a,m=15*a,n=74*a,p=30*a,q=document.createElement("canvas");q.width=r;q.height=h;q.style.cssText="width:80px;height:48px";var b=q.getContext("2d");b.font="bold "+9*a+"px Helvetica,Arial,sans-serif";b.textBaseline="top";b.fillStyle=l;b.fillRect(0,0,r,h);b.fillStyle=f;b.fillText(e,t,v);
+	b.fillRect(d,m,n,p);b.fillStyle=l;b.globalAlpha=.9;b.fillRect(d,m,n,p);return {dom:q,update:function(h,w){c=Math.min(c,h);k=Math.max(k,h);b.fillStyle=l;b.globalAlpha=1;b.fillRect(0,0,r,m);b.fillStyle=f;b.fillText(g(h)+" "+e+" ("+g(c)+"-"+g(k)+")",t,v);b.drawImage(q,d+a,m,n-a,p,d,m,n-a,p);b.fillRect(d+n-a,m,a,p);b.fillStyle=l;b.globalAlpha=.9;b.fillRect(d+n-a,m,a,g((1-h/w)*p));}}};return f});
+	}(stats_min$1));
+
+	var stats_min = stats_min$1.exports;
+
+	var Stats = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.assign(/*#__PURE__*/Object.create(null), stats_min$1.exports, {
+		'default': stats_min
+	}));
+
+	class IfcStats extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.stats = new Stats();
+	        this.stats.showPanel(0);
+	    }
+	    update(_delta) {
+	        this.stats.update();
+	    }
+	    addStats(css = '') {
+	        if (css.length > 0)
+	            this.stats.dom.style.cssText = css;
+	        document.body.appendChild(this.stats.dom);
+	    }
 	}
 
 	var __commonJS = (callback, module) => () => {
@@ -36156,7 +37861,7 @@
 	      __ATINIT__.push({func: function() {
 	        ___wasm_call_ctors();
 	      }});
-	      var asmLibraryArg = {x: ___assert_fail, A: ___sys_fcntl64, O: ___sys_ioctl, P: ___sys_open, U: __embind_finalize_value_array, s: __embind_finalize_value_object, S: __embind_register_bool, v: __embind_register_class, u: __embind_register_class_constructor, d: __embind_register_class_function, R: __embind_register_emval, C: __embind_register_float, j: __embind_register_function, m: __embind_register_integer, i: __embind_register_memory_view, D: __embind_register_std_string, w: __embind_register_std_wstring, V: __embind_register_value_array, g: __embind_register_value_array_element, t: __embind_register_value_object, k: __embind_register_value_object_field, T: __embind_register_void, q: __emval_as, b: __emval_decref, L: __emval_get_global, n: __emval_get_property, l: __emval_incref, Q: __emval_instanceof, E: __emval_is_number, y: __emval_new_array, f: __emval_new_cstring, r: __emval_new_object, p: __emval_run_destructors, h: __emval_set_property, e: __emval_take_value, c: _abort, M: _clock_gettime, H: _emscripten_memcpy_big, o: _emscripten_resize_heap, J: _environ_get, K: _environ_sizes_get, B: _fd_close, N: _fd_read, F: _fd_seek, z: _fd_write, a: wasmMemory, G: _setTempRet0, I: _strftime_l};
+	      var asmLibraryArg = {x: ___assert_fail, A: ___sys_fcntl64, O: ___sys_ioctl, P: ___sys_open, U: __embind_finalize_value_array, s: __embind_finalize_value_object, S: __embind_register_bool, v: __embind_register_class, u: __embind_register_class_constructor, d: __embind_register_class_function, R: __embind_register_emval, C: __embind_register_float, i: __embind_register_function, m: __embind_register_integer, j: __embind_register_memory_view, D: __embind_register_std_string, w: __embind_register_std_wstring, V: __embind_register_value_array, g: __embind_register_value_array_element, t: __embind_register_value_object, k: __embind_register_value_object_field, T: __embind_register_void, q: __emval_as, b: __emval_decref, L: __emval_get_global, n: __emval_get_property, l: __emval_incref, Q: __emval_instanceof, E: __emval_is_number, y: __emval_new_array, f: __emval_new_cstring, r: __emval_new_object, p: __emval_run_destructors, h: __emval_set_property, e: __emval_take_value, c: _abort, M: _clock_gettime, H: _emscripten_memcpy_big, o: _emscripten_resize_heap, J: _environ_get, K: _environ_sizes_get, B: _fd_close, N: _fd_read, F: _fd_seek, z: _fd_write, a: wasmMemory, G: _setTempRet0, I: _strftime_l};
 	      createWasm();
 	      var ___wasm_call_ctors = Module["___wasm_call_ctors"] = function() {
 	        return (___wasm_call_ctors = Module["___wasm_call_ctors"] = Module["asm"]["X"]).apply(null, arguments);
@@ -67594,8 +69299,10 @@
 	  }
 	  OpenModel(data, settings) {
 	    this.wasmModule["FS_createDataFile"]("/", "filename", data, true, true, true);
-	    let s = settings ? settings : {
-	      COORDINATE_TO_ORIGIN: false
+	    let s = {
+	      COORDINATE_TO_ORIGIN: false,
+	      USE_FAST_BOOLS: false,
+	      ...settings
 	    };
 	    let result = this.wasmModule.OpenModel(s);
 	    this.wasmModule["FS_unlink"]("/filename");
@@ -67694,6 +69401,9 @@
 	  }
 	  LoadAllGeometry(modelID) {
 	    return this.wasmModule.LoadAllGeometry(modelID);
+	  }
+	  GetFlatMesh(modelID, expressID) {
+	    return this.wasmModule.GetFlatMesh(modelID, expressID);
 	  }
 	  SetWasmPath(path) {
 	    WasmPath = path;
@@ -68694,7 +70404,7 @@
 		// https://stackoverflow.com/questions/34043955/detect-collision-between-sphere-and-triangle-in-three-js
 		const closestPointTemp = new Vector3();
 		const projectedPointTemp = new Vector3();
-		const planeTemp = new Plane$1();
+		const planeTemp = new Plane();
 		const lineTemp = new Line3();
 		return function sphereIntersectTriangle( sphere, triangle ) {
 
@@ -72156,6 +73866,32 @@
 	  return new BufferAttribute(new Uint32Array(data), size);
 	};
 	const DEFAULT = 'default';
+	const PropsNames = {
+	  aggregates: {
+	    name: IFCRELAGGREGATES,
+	    relating: 'RelatingObject',
+	    related: 'RelatedObjects',
+	    key: 'children'
+	  },
+	  spatial: {
+	    name: IFCRELCONTAINEDINSPATIALSTRUCTURE,
+	    relating: 'RelatingStructure',
+	    related: 'RelatedElements',
+	    key: 'children'
+	  },
+	  psets: {
+	    name: IFCRELDEFINESBYPROPERTIES,
+	    relating: 'RelatingPropertyDefinition',
+	    related: 'RelatedObjects',
+	    key: 'hasPsets'
+	  },
+	  type: {
+	    name: IFCRELDEFINESBYTYPE,
+	    relating: 'RelatingType',
+	    related: 'RelatedObjects',
+	    key: 'hasType'
+	  }
+	};
 
 	class IFCParser {
 
@@ -72189,7 +73925,8 @@
 	    this.state.models[modelID] = {
 	      modelID,
 	      mesh: {},
-	      items: {}
+	      items: {},
+	      types: {}
 	    };
 	    return modelID;
 	  }
@@ -72496,6 +74233,144 @@
 
 	}
 
+	const IfcElements = {
+	  '103090709': 'IFCPROJECT',
+	  '4097777520': 'IFCSITE',
+	  '4031249490': 'IFCBUILDING',
+	  '3124254112': 'IFCBUILDINGSTOREY',
+	  '3856911033': 'IFCSPACE',
+	  '25142252': 'IFCCONTROLLER',
+	  '32344328': 'IFCBOILER',
+	  '76236018': 'IFCLAMP',
+	  '90941305': 'IFCPUMP',
+	  '177149247': 'IFCAIRTERMINALBOX',
+	  '182646315': 'IFCFLOWINSTRUMENT',
+	  '263784265': 'IFCFURNISHINGELEMENT',
+	  '264262732': 'IFCELECTRICGENERATOR',
+	  '277319702': 'IFCAUDIOVISUALAPPLIANCE',
+	  '310824031': 'IFCPIPEFITTING',
+	  '331165859': 'IFCSTAIR',
+	  '342316401': 'IFCDUCTFITTING',
+	  '377706215': 'IFCMECHANICALFASTENER',
+	  '395920057': 'IFCDOOR',
+	  '402227799': 'IFCELECTRICMOTOR',
+	  '413509423': 'IFCSYSTEMFURNITUREELEMENT',
+	  '484807127': 'IFCEVAPORATOR',
+	  '486154966': 'IFCWINDOWSTANDARDCASE',
+	  '629592764': 'IFCLIGHTFIXTURE',
+	  '630975310': 'IFCUNITARYCONTROLELEMENT',
+	  '635142910': 'IFCCABLECARRIERFITTING',
+	  '639361253': 'IFCCOIL',
+	  '647756555': 'IFCFASTENER',
+	  '707683696': 'IFCFLOWSTORAGEDEVICE',
+	  '738039164': 'IFCPROTECTIVEDEVICE',
+	  '753842376': 'IFCBEAM',
+	  '812556717': 'IFCTANK',
+	  '819412036': 'IFCFILTER',
+	  '843113511': 'IFCCOLUMN',
+	  '862014818': 'IFCELECTRICDISTRIBUTIONBOARD',
+	  '900683007': 'IFCFOOTING',
+	  '905975707': 'IFCCOLUMNSTANDARDCASE',
+	  '926996030': 'IFCVOIDINGFEATURE',
+	  '979691226': 'IFCREINFORCINGBAR',
+	  '987401354': 'IFCFLOWSEGMENT',
+	  '1003880860': 'IFCELECTRICTIMECONTROL',
+	  '1051757585': 'IFCCABLEFITTING',
+	  '1052013943': 'IFCDISTRIBUTIONCHAMBERELEMENT',
+	  '1062813311': 'IFCDISTRIBUTIONCONTROLELEMENT',
+	  '1073191201': 'IFCMEMBER',
+	  '1095909175': 'IFCBUILDINGELEMENTPROXY',
+	  '1156407060': 'IFCPLATESTANDARDCASE',
+	  '1162798199': 'IFCSWITCHINGDEVICE',
+	  '1329646415': 'IFCSHADINGDEVICE',
+	  '1335981549': 'IFCDISCRETEACCESSORY',
+	  '1360408905': 'IFCDUCTSILENCER',
+	  '1404847402': 'IFCSTACKTERMINAL',
+	  '1426591983': 'IFCFIRESUPPRESSIONTERMINAL',
+	  '1437502449': 'IFCMEDICALDEVICE',
+	  '1509553395': 'IFCFURNITURE',
+	  '1529196076': 'IFCSLAB',
+	  '1620046519': 'IFCTRANSPORTELEMENT',
+	  '1634111441': 'IFCAIRTERMINAL',
+	  '1658829314': 'IFCENERGYCONVERSIONDEVICE',
+	  '1677625105': 'IFCCIVILELEMENT',
+	  '1687234759': 'IFCPILE',
+	  '1904799276': 'IFCELECTRICAPPLIANCE',
+	  '1911478936': 'IFCMEMBERSTANDARDCASE',
+	  '1945004755': 'IFCDISTRIBUTIONELEMENT',
+	  '1973544240': 'IFCCOVERING',
+	  '1999602285': 'IFCSPACEHEATER',
+	  '2016517767': 'IFCROOF',
+	  '2056796094': 'IFCAIRTOAIRHEATRECOVERY',
+	  '2058353004': 'IFCFLOWCONTROLLER',
+	  '2068733104': 'IFCHUMIDIFIER',
+	  '2176052936': 'IFCJUNCTIONBOX',
+	  '2188021234': 'IFCFLOWMETER',
+	  '2223149337': 'IFCFLOWTERMINAL',
+	  '2262370178': 'IFCRAILING',
+	  '2272882330': 'IFCCONDENSER',
+	  '2295281155': 'IFCPROTECTIVEDEVICETRIPPINGUNIT',
+	  '2320036040': 'IFCREINFORCINGMESH',
+	  '2347447852': 'IFCTENDONANCHOR',
+	  '2391383451': 'IFCVIBRATIONISOLATOR',
+	  '2391406946': 'IFCWALL',
+	  '2474470126': 'IFCMOTORCONNECTION',
+	  '2769231204': 'IFCVIRTUALELEMENT',
+	  '2814081492': 'IFCENGINE',
+	  '2906023776': 'IFCBEAMSTANDARDCASE',
+	  '2938176219': 'IFCBURNER',
+	  '2979338954': 'IFCBUILDINGELEMENTPART',
+	  '3024970846': 'IFCRAMP',
+	  '3026737570': 'IFCTUBEBUNDLE',
+	  '3027962421': 'IFCSLABSTANDARDCASE',
+	  '3040386961': 'IFCDISTRIBUTIONFLOWELEMENT',
+	  '3053780830': 'IFCSANITARYTERMINAL',
+	  '3079942009': 'IFCOPENINGSTANDARDCASE',
+	  '3087945054': 'IFCALARM',
+	  '3101698114': 'IFCSURFACEFEATURE',
+	  '3127900445': 'IFCSLABELEMENTEDCASE',
+	  '3132237377': 'IFCFLOWMOVINGDEVICE',
+	  '3171933400': 'IFCPLATE',
+	  '3221913625': 'IFCCOMMUNICATIONSAPPLIANCE',
+	  '3242481149': 'IFCDOORSTANDARDCASE',
+	  '3283111854': 'IFCRAMPFLIGHT',
+	  '3296154744': 'IFCCHIMNEY',
+	  '3304561284': 'IFCWINDOW',
+	  '3310460725': 'IFCELECTRICFLOWSTORAGEDEVICE',
+	  '3319311131': 'IFCHEATEXCHANGER',
+	  '3415622556': 'IFCFAN',
+	  '3420628829': 'IFCSOLARDEVICE',
+	  '3493046030': 'IFCGEOGRAPHICELEMENT',
+	  '3495092785': 'IFCCURTAINWALL',
+	  '3508470533': 'IFCFLOWTREATMENTDEVICE',
+	  '3512223829': 'IFCWALLSTANDARDCASE',
+	  '3518393246': 'IFCDUCTSEGMENT',
+	  '3571504051': 'IFCCOMPRESSOR',
+	  '3588315303': 'IFCOPENINGELEMENT',
+	  '3612865200': 'IFCPIPESEGMENT',
+	  '3640358203': 'IFCCOOLINGTOWER',
+	  '3651124850': 'IFCPROJECTIONELEMENT',
+	  '3694346114': 'IFCOUTLET',
+	  '3747195512': 'IFCEVAPORATIVECOOLER',
+	  '3758799889': 'IFCCABLECARRIERSEGMENT',
+	  '3824725483': 'IFCTENDON',
+	  '3825984169': 'IFCTRANSFORMER',
+	  '3902619387': 'IFCCHILLER',
+	  '4074379575': 'IFCDAMPER',
+	  '4086658281': 'IFCSENSOR',
+	  '4123344466': 'IFCELEMENTASSEMBLY',
+	  '4136498852': 'IFCCOOLEDBEAM',
+	  '4156078855': 'IFCWALLELEMENTEDCASE',
+	  '4175244083': 'IFCINTERCEPTOR',
+	  '4207607924': 'IFCVALVE',
+	  '4217484030': 'IFCCABLESEGMENT',
+	  '4237592921': 'IFCWASTETERMINAL',
+	  '4252922144': 'IFCSTAIRFLIGHT',
+	  '4278956645': 'IFCFLOWFITTING',
+	  '4288193352': 'IFCACTUATOR',
+	  '4292641817': 'IFCUNITARYEQUIPMENT'
+	};
+
 	class PropertyManager {
 
 	  constructor(state) {
@@ -72524,62 +74399,129 @@
 	  }
 
 	  getPropertySets(modelID, elementID, recursive = false) {
-	    const propSetIds = this.getAllRelatedItemsOfType(modelID, elementID, IFCRELDEFINESBYPROPERTIES, 'RelatedObjects', 'RelatingPropertyDefinition');
+	    const propSetIds = this.getAllRelatedItemsOfType(modelID, elementID, PropsNames.psets);
 	    return propSetIds.map((id) => this.state.api.GetLine(modelID, id, recursive));
 	  }
 
 	  getTypeProperties(modelID, elementID, recursive = false) {
-	    const typeId = this.getAllRelatedItemsOfType(modelID, elementID, IFCRELDEFINESBYTYPE, 'RelatedObjects', 'RelatingType');
+	    const typeId = this.getAllRelatedItemsOfType(modelID, elementID, PropsNames.type);
 	    return typeId.map((id) => this.state.api.GetLine(modelID, id, recursive));
 	  }
 
-	  getSpatialStructure(modelID, recursive) {
-	    let lines = this.state.api.GetLineIDsWithType(modelID, IFCPROJECT);
-	    let ifcProjectId = lines.get(0);
-	    let ifcProject = this.state.api.GetLine(modelID, ifcProjectId);
-	    this.getAllSpatialChildren(modelID, ifcProject, recursive);
-	    return ifcProject;
+	  getSpatialStructure(modelID) {
+	    const chunks = this.getSpatialTreeChunks(modelID);
+	    const projectID = this.state.api.GetLineIDsWithType(modelID, IFCPROJECT).get(0);
+	    const project = this.newIfcProject(projectID);
+	    this.getSpatialNode(modelID, project, chunks);
+	    return project;
 	  }
 
-	  getAllSpatialChildren(modelID, item, recursive) {
-	    item.hasChildren = [];
-	    item.hasSpatialChildren = [];
-	    this.getChildren(modelID, item.expressID, item.hasSpatialChildren, 'RelatingObject', 'RelatedObjects', IFCRELAGGREGATES, recursive, true);
-	    this.getChildren(modelID, item.expressID, item.hasChildren, 'RelatingStructure', 'RelatedElements', IFCRELCONTAINEDINSPATIALSTRUCTURE, recursive, false);
+	  newIfcProject(id) {
+	    return {
+	      expressID: id,
+	      type: 'IFCPROJECT',
+	      children: []
+	    };
 	  }
 
-	  getChildren(modelID, id, prop, relating, rel, relProp, recursive, isSpatial) {
-	    const childrenID = this.getAllRelatedItemsOfType(modelID, id, relProp, relating, rel);
-	    if (!recursive && !isSpatial)
-	      return prop.push(...childrenID);
-	    const items = childrenID.map((id) => this.state.api.GetLine(modelID, id, false));
-	    prop.push(...items);
-	    prop.forEach((child) => this.getAllSpatialChildren(modelID, child, recursive));
+	  getSpatialTreeChunks(modelID) {
+	    const treeChunks = {};
+	    this.getChunks(modelID, treeChunks, PropsNames.aggregates);
+	    this.getChunks(modelID, treeChunks, PropsNames.spatial);
+	    return treeChunks;
 	  }
 
-	  getAllRelatedItemsOfType(modelID, id, type, relation, related) {
-	    const lines = this.state.api.GetLineIDsWithType(modelID, type);
+	  getChunks(modelID, chunks, propNames) {
+	    const relation = this.state.api.GetLineIDsWithType(modelID, propNames.name);
+	    for (let i = 0; i < relation.size(); i++) {
+	      const rel = this.state.api.GetLine(modelID, relation.get(i), false);
+	      const relating = rel[propNames.relating].value;
+	      const related = rel[propNames.related].map((r) => r.value);
+	      chunks[relating] = related;
+	    }
+	  }
+
+	  getSpatialNode(modelID, node, treeChunks) {
+	    this.getChildren(modelID, node, treeChunks, PropsNames.aggregates);
+	    this.getChildren(modelID, node, treeChunks, PropsNames.spatial);
+	  }
+
+	  getChildren(modelID, node, treeChunks, propNames) {
+	    const children = treeChunks[node.expressID];
+	    if (children == undefined || children == null)
+	      return;
+	    const prop = propNames.key;
+	    node[prop] = children.map((child) => {
+	      const node = this.newNode(modelID, child);
+	      this.getSpatialNode(modelID, node, treeChunks);
+	      return node;
+	    });
+	  }
+
+	  newNode(modelID, id) {
+	    const typeID = this.state.models[modelID].types[id].toString();
+	    const typeName = IfcElements[typeID];
+	    return {
+	      expressID: id,
+	      type: typeName,
+	      children: [],
+	    };
+	  }
+
+	  getAllRelatedItemsOfType(modelID, id, propNames) {
+	    const lines = this.state.api.GetLineIDsWithType(modelID, propNames.name);
 	    const IDs = [];
 	    for (let i = 0; i < lines.size(); i++) {
-	      const relID = lines.get(i);
-	      const rel = this.state.api.GetLine(modelID, relID);
-	      const relatedItems = rel[relation];
-	      let foundElement = false;
-	      if (Array.isArray(relatedItems)) {
-	        const values = relatedItems.map((item) => item.value);
-	        foundElement = values.includes(id);
-	      }
-	      else
-	        foundElement = relatedItems.value === id;
-	      if (foundElement) {
-	        const element = rel[related];
-	        if (!Array.isArray(element))
-	          IDs.push(element.value);
-	        else
-	          element.forEach((ele) => IDs.push(ele.value));
-	      }
+	      const rel = this.state.api.GetLine(modelID, lines.get(i));
+	      const isRelated = this.isRelated(id, rel, propNames);
+	      if (isRelated)
+	        this.getRelated(rel, propNames, IDs);
 	    }
 	    return IDs;
+	  }
+
+	  getRelated(rel, propNames, IDs) {
+	    const element = rel[propNames.relating];
+	    if (!Array.isArray(element))
+	      IDs.push(element.value);
+	    else
+	      element.forEach((ele) => IDs.push(ele.value));
+	  }
+
+	  isRelated(id, rel, propNames) {
+	    const relatedItems = rel[propNames.related];
+	    if (Array.isArray(relatedItems)) {
+	      const values = relatedItems.map((item) => item.value);
+	      return values.includes(id);
+	    }
+	    return relatedItems.value === id;
+	  }
+
+	}
+
+	class TypeManager {
+
+	  constructor(state) {
+	    this.state = state;
+	  }
+
+	  getAllTypes() {
+	    for (let modelID in this.state.models) {
+	      const types = this.state.models[modelID].types;
+	      if (Object.keys(types).length == 0)
+	        this.getAllTypesOfModel(parseInt(modelID));
+	    }
+	  }
+
+	  getAllTypesOfModel(modelID) {
+	    this.state.models[modelID].types;
+	    const elements = Object.keys(IfcElements).map((e) => parseInt(e));
+	    const types = this.state.models[modelID].types;
+	    elements.forEach((type) => {
+	      const lines = this.state.api.GetLineIDsWithType(modelID, type);
+	      for (let i = 0; i < lines.size(); i++)
+	        types[lines.get(i)] = type;
+	    });
 	  }
 
 	}
@@ -72594,10 +74536,13 @@
 	    this.parser = new IFCParser(this.state);
 	    this.subsets = new SubsetManager(this.state);
 	    this.properties = new PropertyManager(this.state);
+	    this.types = new TypeManager(this.state);
 	  }
 
-	  parse(buffer) {
-	    return this.parser.parse(buffer);
+	  async parse(buffer) {
+	    const result = await this.parser.parse(buffer);
+	    this.types.getAllTypes();
+	    return result;
 	  }
 
 	  setWasmPath(path) {
@@ -72631,8 +74576,13 @@
 	    return this.properties.getTypeProperties(modelID, id, recursive);
 	  }
 
-	  getSpatialStructure(modelID, recursive) {
-	    return this.properties.getSpatialStructure(modelID, recursive);
+	  getIfcType(modelID, id) {
+	    const typeID = this.state.models[modelID].types[id];
+	    return IfcElements[typeID.toString()];
+	  }
+
+	  getSpatialStructure(modelID) {
+	    return this.properties.getSpatialStructure(modelID);
 	  }
 
 	  getSubset(modelID, material) {
@@ -72709,8 +74659,12 @@
 	    return this.ifcManager.getTypeProperties(modelID, id, recursive);
 	  }
 
-	  getSpatialStructure(modelID, recursive = false) {
-	    return this.ifcManager.getSpatialStructure(modelID, recursive);
+	  getIfcType(modelID, id) {
+	    return this.ifcManager.getIfcType(modelID, id);
+	  }
+
+	  getSpatialStructure(modelID) {
+	    return this.ifcManager.getSpatialStructure(modelID);
 	  }
 
 	  getSubset(modelID, material) {
@@ -72727,40 +74681,28 @@
 
 	}
 
-	class IFCRaycaster {
-	    constructor(ifcModels, camera, mouse) {
-	        this.camera = camera;
-	        this.mouse = mouse;
-	        this.ifcModels = ifcModels;
-	        this.raycaster = new Raycaster();
-	        //@ts-ignore
-	        this.raycaster.firstHitOnly = true;
-	    }
-	    castRay(event, onHit) {
-	        this.raycaster.setFromCamera(this.mouse, this.camera);
-	        const result = this.raycaster.intersectObjects(this.ifcModels);
-	        if (result.length > 0)
-	            return onHit(event, result[0]);
-	    }
-	}
-
-	class IfcSelection {
-	    constructor(ifcLoader, scene, material) {
-	        this.select = (event, item) => {
-	            if (this.selected == item.faceIndex || item.faceIndex == null)
-	                return;
+	class IfcSelection extends IfcComponent {
+	    constructor(context, loader, material) {
+	        super(context);
+	        this.pick = (item) => {
+	            if (this.selected === item.faceIndex || item.faceIndex == null)
+	                return null;
 	            this.selected = item.faceIndex;
 	            const mesh = item.object;
-	            const id = this.ifcLoader.getExpressId(mesh.geometry, item.faceIndex);
-	            if (id == undefined)
+	            const id = this.loader.getExpressId(mesh.geometry, item.faceIndex);
+	            if (id === undefined)
 	                return null;
-	            this.removePreviousSelection(mesh);
+	            this.removeSelectionOfOtherModel(mesh);
 	            this.modelID = mesh.modelID;
 	            this.newSelection(id);
 	            return { modelID: this.modelID, id };
 	        };
+	        this.pickByID = (modelID, id) => {
+	            this.modelID = modelID;
+	            this.newSelection(id);
+	        };
 	        this.newSelection = (id) => {
-	            this.ifcLoader.createSubset({
+	            this.loader.createSubset({
 	                scene: this.scene,
 	                modelID: this.modelID,
 	                ids: [id],
@@ -72768,2137 +74710,229 @@
 	                material: this.material
 	            });
 	        };
-	        this.ifcLoader = ifcLoader;
+	        this.scene = context.getScene();
+	        this.loader = loader;
+	        this.material = material;
 	        this.selected = -1;
 	        this.modelID = -1;
-	        this.scene = scene;
-	        this.material = material;
 	    }
-	    removePreviousSelection(mesh) {
-	        if (this.modelID != undefined && this.modelID != mesh.modelID) {
-	            this.ifcLoader.removeSubset(this.modelID, this.scene, this.material);
+	    removeSelectionOfOtherModel(mesh) {
+	        if (this.modelID !== undefined && this.modelID !== (mesh === null || mesh === void 0 ? void 0 : mesh.modelID)) {
+	            this.loader.removeSubset(this.modelID, this.scene, this.material);
 	        }
 	    }
 	}
 
-	class IfcManager {
-	    constructor(ifc_objects, scene, camera, mouse) {
-	        this.preselectMat = new MeshLambertMaterial({
-	            color: 0xffccff,
-	            transparent: true,
-	            opacity: 0.5,
-	            depthTest: false,
-	            side: DoubleSide
-	        });
-	        this.selectMat = new MeshLambertMaterial({
-	            color: 0xff33ff,
-	            transparent: true,
-	            opacity: 0.3,
-	            depthTest: false,
-	            side: DoubleSide
-	        });
+	class IfcManager extends IfcComponent {
+	    constructor(context) {
+	        super(context);
+	        this.context = context;
 	        this.loader = new IFCLoader();
-	        this.models = ifc_objects;
-	        this.scene = scene;
-	        this.caster = new IFCRaycaster(this.models, camera, mouse);
-	        this.preselection = new IfcSelection(this.loader, this.scene, this.preselectMat);
-	        this.selection = new IfcSelection(this.loader, this.scene, this.selectMat);
+	        this.defSelectMat = this.initializeDefMaterial(0xff33ff, 0.3);
+	        this.defPreselectMat = this.initializeDefMaterial(0xffccff, 0.5);
+	        this.selectMat = context.options.selectMaterial || this.defSelectMat;
+	        this.preselectMat = context.options.preselectMaterial || this.defPreselectMat;
+	        this.preselection = new IfcSelection(context, this.loader, this.preselectMat);
+	        this.selection = new IfcSelection(context, this.loader, this.selectMat);
 	    }
-	    async loadIfc(file, scene) {
+	    async loadIfc(file) {
 	        const url = URL.createObjectURL(file);
+	        await this.loadIfcUrl(url);
+	    }
+	    async loadIfcUrl(url) {
 	        try {
 	            const object = await this.loader.loadAsync(url);
-	            this.models.push(object);
-	            // @ts-ignore
-	            scene.add(object);
+	            this.context.items.ifcModels.push(object);
+	            this.context.getScene().add(object);
 	        }
 	        catch (err) {
 	            console.error('Error loading IFC.');
 	            console.error(err);
 	        }
 	    }
-	    getSpatialStructure(modelID, recursive = false) {
-	        return this.loader.getSpatialStructure(modelID, recursive);
+	    setWasmPath(path) {
+	        this.loader.setWasmPath(path);
 	    }
-	    getProperties(modelID, id, indirect = false) {
+	    getSpatialStructure(modelID) {
+	        return this.loader.getSpatialStructure(modelID);
+	    }
+	    getProperties(modelID, id, indirect) {
+	        if (modelID == null || id == null)
+	            return null;
 	        const props = this.loader.getItemProperties(modelID, id);
 	        if (indirect) {
-	            props.psets = this.loader.getPropertySets(modelID, id, true);
+	            props.psets = this.loader.getPropertySets(modelID, id);
 	            props.type = this.loader.getTypeProperties(modelID, id);
 	        }
 	        console.log(props);
 	        return props;
 	    }
-	    preselect(event) {
-	        this.caster.castRay(event, this.preselection.select);
+	    getModelId() {
+	        const found = this.context.castRayIfc();
+	        if (!found)
+	            return null;
+	        const mesh = found.object;
+	        if (!mesh || typeof mesh.modelID !== 'number')
+	            return null;
+	        return mesh.modelID;
 	    }
-	    select(event) {
-	        const { modelID, id } = this.caster.castRay(event, this.selection.select);
-	        return this.getProperties(modelID, id, true);
+	    getAllItemsOfType(modelID, type, verbose = true) {
+	        return this.loader.getAllItemsOfType(modelID, type, verbose);
 	    }
-	}
-
-	class Viewer {
-	    constructor(container, options) {
-	        // We keep track of components to update
-	        this.components = [];
-	        this.mouse = new Vector2();
-	        this.ifc_objects = [];
-	        this.render = () => {
-	            const delta = this.clock.getDelta();
-	            requestAnimationFrame(this.render);
-	            this.controls.update();
-	            this.renderer.render(this.scene, this.camera);
-	            this.components.forEach((component) => component.update(delta));
-	        };
-	        this.loadIfc = async (file, fitToFrame = false) => {
-	            await this.ifcManager.loadIfc(file, this.scene);
-	            if (fitToFrame)
-	                this.fitModelToFrame();
-	        };
-	        this.preselect = (event) => {
-	            this.ifcManager.preselect(event);
-	        };
-	        this.select = (event) => {
-	            this.ifcManager.select(event);
-	        };
-	        this.addComponent = (component) => {
-	            this.components.push(component);
-	        };
-	        this.takeScreenshot = () => {
-	            this.render();
-	            return this.renderer.domElement.toDataURL("image/png");
-	        };
-	        if (!container) {
-	            throw new Error("Could not get container element!");
+	    prePickIfcItem() {
+	        const found = this.context.castRayIfc();
+	        if (!found) {
+	            this.preselection.removeSelectionOfOtherModel();
+	            return;
 	        }
-	        const width = container.clientWidth;
-	        const height = container.clientHeight;
-	        const scene = new Scene();
-	        this.scene = scene;
-	        const camera = new PerspectiveCamera(45, width / height, 0.1, 1000);
-	        this.camera = camera;
-	        const renderer = new WebGLRenderer({ antialias: true });
-	        container.appendChild(renderer.domElement);
-	        this.renderer = renderer;
-	        const clock = new Clock(true);
-	        this.clock = clock;
-	        const controls = new OrbitControls(camera, renderer.domElement);
-	        this.controls = controls;
-	        //Scene
-	        scene.background = (options === null || options === void 0 ? void 0 : options.backgroundColor) || new Color(0xa9a9a9);
-	        //Renderer
-	        renderer.setSize(width, height);
-	        renderer.localClippingEnabled = true;
-	        //Camera
-	        camera.position.z = 8;
-	        camera.position.y = 8;
-	        camera.position.x = 8;
-	        // camera.up = new Vector3(0, 0, 1);
-	        camera.lookAt(new Vector3(0, 0, 0));
-	        //Controls
-	        controls.enableDamping = true;
-	        controls.dampingFactor *= 2;
-	        //Lights
-	        const light1 = new DirectionalLight(0xffeeff, 0.8);
-	        light1.position.set(1, 1, 1);
-	        scene.add(light1);
-	        const light2 = new DirectionalLight(0xffffff, 0.8);
-	        light2.position.set(-1, 0.5, -1);
-	        scene.add(light2);
-	        const ambientLight = new AmbientLight(0xffffee, 0.25);
-	        scene.add(ambientLight);
-	        //Mouse position
-	        renderer.domElement.onmousemove = (event) => {
-	            const rect = renderer.domElement.getBoundingClientRect();
-	            this.mouse.x = ((event.clientX - rect.left) / renderer.domElement.clientWidth) * 2 - 1;
-	            this.mouse.y = -((event.clientY - rect.top) / renderer.domElement.clientHeight) * 2 + 1;
-	        };
-	        //Window resize support
-	        window.addEventListener('resize', () => {
-	            const width = container.clientWidth;
-	            const height = container.clientHeight;
-	            camera.aspect = width / height;
-	            camera.updateProjectionMatrix();
-	            renderer.setSize(width, height);
-	        });
-	        this.render();
-	        //IFC management
-	        this.ifcManager = new IfcManager(this.ifc_objects, this.scene, this.camera, this.mouse);
+	        this.preselection.pick(found);
 	    }
-	    get ifcObjects() {
-	        return this.ifc_objects;
+	    pickIfcItem() {
+	        const found = this.context.castRayIfc();
+	        if (!found)
+	            return null;
+	        const result = this.selection.pick(found);
+	        if (result == null || result.modelID == null || result.id == null)
+	            return null;
+	        return result;
 	    }
-	    ;
-	    fitModelToFrame() {
-	        const box = new Box3().setFromObject(this.scene.children[this.scene.children.length - 1]);
-	        const boxSize = box.getSize(new Vector3()).length();
-	        const boxCenter = box.getCenter(new Vector3());
-	        const halfSizeToFitOnScreen = boxSize * 0.5;
-	        const halfFovY = MathUtils.degToRad(this.camera.fov * 0.5);
-	        const distance = halfSizeToFitOnScreen / Math.tan(halfFovY);
-	        const direction = new Vector3()
-	            .subVectors(this.camera.position, boxCenter)
-	            .multiply(new Vector3(1, 0, 1))
-	            .normalize();
-	        this.camera.position.copy(direction.multiplyScalar(distance).add(boxCenter));
-	        this.camera.updateProjectionMatrix();
-	        this.camera.lookAt(boxCenter.x, boxCenter.y, boxCenter.z);
-	        // set target to newest loaded model
-	        this.controls.target.copy(boxCenter);
-	        this.controls.update();
+	    pickIfcItemByID(modelID, id) {
+	        this.selection.pickByID(modelID, id);
 	    }
-	    set currentViewpoint(viewpoint) {
-	        if (viewpoint.perspective_camera) {
-	            const { camera_view_point, camera_direction, field_of_view } = viewpoint.perspective_camera;
-	            const matrix = new Matrix4();
-	            getBasisTransform("+X+Z-Y", "+X+Y+Z", matrix);
-	            //Left handed Z up => Right handed Y up
-	            const position = new Vector3(camera_view_point.x, camera_view_point.y, camera_view_point.z);
-	            const direction = new Vector3(camera_direction.x, camera_direction.y, camera_direction.z);
-	            position.applyMatrix4(matrix);
-	            direction.applyMatrix4(matrix);
-	            this.controls.object.position.set(position.x, position.y, position.z);
-	            const ray = new Ray(position, direction);
-	            const target = new Vector3();
-	            ray.at(5, target);
-	            this.controls.target = new Vector3(target.x, target.y, target.z);
-	            this.controls.update();
-	            // this.camera.up.set(camera_up_vector.x, camera_up_vector.z, -camera_up_vector.y);
-	            this.camera.fov = field_of_view;
-	        }
-	    }
-	}
-
-	class Component {
-	    constructor(viewer) {
-	        viewer.addComponent(this);
-	        this.viewer = viewer;
-	    }
-	    update(_delta) { }
-	    ;
-	}
-
-	class Axes extends Component {
-	    constructor(viewer, size) {
-	        super(viewer);
-	        this.axes = new AxesHelper(size);
-	        this.axes.material.depthTest = false;
-	        this.axes.renderOrder = 2;
-	        viewer.scene.add(this.axes);
-	    }
-	}
-
-	class Grid extends Component {
-	    constructor(viewer, size, divisions, colorCenterLine, colorGrid) {
-	        super(viewer);
-	        this.grid = new GridHelper(size, divisions, colorCenterLine, colorGrid);
-	        this.grid.material.depthTest = false;
-	        this.grid.renderOrder = 0;
-	        viewer.scene.add(this.grid);
-	    }
-	}
-
-	const _raycaster = new Raycaster();
-
-	const _tempVector = new Vector3();
-	const _tempVector2 = new Vector3();
-	const _tempQuaternion = new Quaternion();
-	const _unit = {
-		X: new Vector3( 1, 0, 0 ),
-		Y: new Vector3( 0, 1, 0 ),
-		Z: new Vector3( 0, 0, 1 )
-	};
-
-	const _changeEvent = { type: 'change' };
-	const _mouseDownEvent = { type: 'mouseDown' };
-	const _mouseUpEvent = { type: 'mouseUp', mode: null };
-	const _objectChangeEvent = { type: 'objectChange' };
-
-	class TransformControls extends Object3D {
-
-		constructor( camera, domElement ) {
-
-			super();
-
-			if ( domElement === undefined ) {
-
-				console.warn( 'THREE.TransformControls: The second parameter "domElement" is now mandatory.' );
-				domElement = document;
-
-			}
-
-			this.visible = false;
-			this.domElement = domElement;
-
-			const _gizmo = new TransformControlsGizmo();
-			this._gizmo = _gizmo;
-			this.add( _gizmo );
-
-			const _plane = new TransformControlsPlane();
-			this._plane = _plane;
-			this.add( _plane );
-
-			const scope = this;
-
-			// Defined getter, setter and store for a property
-			function defineProperty( propName, defaultValue ) {
-
-				let propValue = defaultValue;
-
-				Object.defineProperty( scope, propName, {
-
-					get: function () {
-
-						return propValue !== undefined ? propValue : defaultValue;
-
-					},
-
-					set: function ( value ) {
-
-						if ( propValue !== value ) {
-
-							propValue = value;
-							_plane[ propName ] = value;
-							_gizmo[ propName ] = value;
-
-							scope.dispatchEvent( { type: propName + '-changed', value: value } );
-							scope.dispatchEvent( _changeEvent );
-
-						}
-
-					}
-
-				} );
-
-				scope[ propName ] = defaultValue;
-				_plane[ propName ] = defaultValue;
-				_gizmo[ propName ] = defaultValue;
-
-			}
-
-			// Define properties with getters/setter
-			// Setting the defined property will automatically trigger change event
-			// Defined properties are passed down to gizmo and plane
-
-			defineProperty( 'camera', camera );
-			defineProperty( 'object', undefined );
-			defineProperty( 'enabled', true );
-			defineProperty( 'axis', null );
-			defineProperty( 'mode', 'translate' );
-			defineProperty( 'translationSnap', null );
-			defineProperty( 'rotationSnap', null );
-			defineProperty( 'scaleSnap', null );
-			defineProperty( 'space', 'world' );
-			defineProperty( 'size', 1 );
-			defineProperty( 'dragging', false );
-			defineProperty( 'showX', true );
-			defineProperty( 'showY', true );
-			defineProperty( 'showZ', true );
-
-			// Reusable utility variables
-
-			const worldPosition = new Vector3();
-			const worldPositionStart = new Vector3();
-			const worldQuaternion = new Quaternion();
-			const worldQuaternionStart = new Quaternion();
-			const cameraPosition = new Vector3();
-			const cameraQuaternion = new Quaternion();
-			const pointStart = new Vector3();
-			const pointEnd = new Vector3();
-			const rotationAxis = new Vector3();
-			const rotationAngle = 0;
-			const eye = new Vector3();
-
-			// TODO: remove properties unused in plane and gizmo
-
-			defineProperty( 'worldPosition', worldPosition );
-			defineProperty( 'worldPositionStart', worldPositionStart );
-			defineProperty( 'worldQuaternion', worldQuaternion );
-			defineProperty( 'worldQuaternionStart', worldQuaternionStart );
-			defineProperty( 'cameraPosition', cameraPosition );
-			defineProperty( 'cameraQuaternion', cameraQuaternion );
-			defineProperty( 'pointStart', pointStart );
-			defineProperty( 'pointEnd', pointEnd );
-			defineProperty( 'rotationAxis', rotationAxis );
-			defineProperty( 'rotationAngle', rotationAngle );
-			defineProperty( 'eye', eye );
-
-			this._offset = new Vector3();
-			this._startNorm = new Vector3();
-			this._endNorm = new Vector3();
-			this._cameraScale = new Vector3();
-
-			this._parentPosition = new Vector3();
-			this._parentQuaternion = new Quaternion();
-			this._parentQuaternionInv = new Quaternion();
-			this._parentScale = new Vector3();
-
-			this._worldScaleStart = new Vector3();
-			this._worldQuaternionInv = new Quaternion();
-			this._worldScale = new Vector3();
-
-			this._positionStart = new Vector3();
-			this._quaternionStart = new Quaternion();
-			this._scaleStart = new Vector3();
-
-			this._getPointer = getPointer.bind( this );
-			this._onPointerDown = onPointerDown.bind( this );
-			this._onPointerHover = onPointerHover.bind( this );
-			this._onPointerMove = onPointerMove.bind( this );
-			this._onPointerUp = onPointerUp.bind( this );
-
-			this.domElement.addEventListener( 'pointerdown', this._onPointerDown );
-			this.domElement.addEventListener( 'pointermove', this._onPointerHover );
-			this.domElement.ownerDocument.addEventListener( 'pointerup', this._onPointerUp );
-
-		}
-
-		// updateMatrixWorld  updates key transformation variables
-		updateMatrixWorld() {
-
-			if ( this.object !== undefined ) {
-
-				this.object.updateMatrixWorld();
-
-				if ( this.object.parent === null ) {
-
-					console.error( 'TransformControls: The attached 3D object must be a part of the scene graph.' );
-
-				} else {
-
-					this.object.parent.matrixWorld.decompose( this._parentPosition, this._parentQuaternion, this._parentScale );
-
-				}
-
-				this.object.matrixWorld.decompose( this.worldPosition, this.worldQuaternion, this._worldScale );
-
-				this._parentQuaternionInv.copy( this._parentQuaternion ).invert();
-				this._worldQuaternionInv.copy( this.worldQuaternion ).invert();
-
-			}
-
-			this.camera.updateMatrixWorld();
-			this.camera.matrixWorld.decompose( this.cameraPosition, this.cameraQuaternion, this._cameraScale );
-
-			this.eye.copy( this.cameraPosition ).sub( this.worldPosition ).normalize();
-
-			super.updateMatrixWorld( this );
-
-		}
-
-		pointerHover( pointer ) {
-
-			if ( this.object === undefined || this.dragging === true ) return;
-
-			_raycaster.setFromCamera( pointer, this.camera );
-
-			const intersect = intersectObjectWithRay( this._gizmo.picker[ this.mode ], _raycaster );
-
-			if ( intersect ) {
-
-				this.axis = intersect.object.name;
-
-			} else {
-
-				this.axis = null;
-
-			}
-
-		}
-
-		pointerDown( pointer ) {
-
-			if ( this.object === undefined || this.dragging === true || pointer.button !== 0 ) return;
-
-			if ( this.axis !== null ) {
-
-				_raycaster.setFromCamera( pointer, this.camera );
-
-				const planeIntersect = intersectObjectWithRay( this._plane, _raycaster, true );
-
-				if ( planeIntersect ) {
-
-					let space = this.space;
-
-					if ( this.mode === 'scale' ) {
-
-						space = 'local';
-
-					} else if ( this.axis === 'E' || this.axis === 'XYZE' || this.axis === 'XYZ' ) {
-
-						space = 'world';
-
-					}
-
-					if ( space === 'local' && this.mode === 'rotate' ) {
-
-						const snap = this.rotationSnap;
-
-						if ( this.axis === 'X' && snap ) this.object.rotation.x = Math.round( this.object.rotation.x / snap ) * snap;
-						if ( this.axis === 'Y' && snap ) this.object.rotation.y = Math.round( this.object.rotation.y / snap ) * snap;
-						if ( this.axis === 'Z' && snap ) this.object.rotation.z = Math.round( this.object.rotation.z / snap ) * snap;
-
-					}
-
-					this.object.updateMatrixWorld();
-					this.object.parent.updateMatrixWorld();
-
-					this._positionStart.copy( this.object.position );
-					this._quaternionStart.copy( this.object.quaternion );
-					this._scaleStart.copy( this.object.scale );
-
-					this.object.matrixWorld.decompose( this.worldPositionStart, this.worldQuaternionStart, this._worldScaleStart );
-
-					this.pointStart.copy( planeIntersect.point ).sub( this.worldPositionStart );
-
-				}
-
-				this.dragging = true;
-				_mouseDownEvent.mode = this.mode;
-				this.dispatchEvent( _mouseDownEvent );
-
-			}
-
-		}
-
-		pointerMove( pointer ) {
-
-			const axis = this.axis;
-			const mode = this.mode;
-			const object = this.object;
-			let space = this.space;
-
-			if ( mode === 'scale' ) {
-
-				space = 'local';
-
-			} else if ( axis === 'E' || axis === 'XYZE' || axis === 'XYZ' ) {
-
-				space = 'world';
-
-			}
-
-			if ( object === undefined || axis === null || this.dragging === false || pointer.button !== - 1 ) return;
-
-			_raycaster.setFromCamera( pointer, this.camera );
-
-			const planeIntersect = intersectObjectWithRay( this._plane, _raycaster, true );
-
-			if ( ! planeIntersect ) return;
-
-			this.pointEnd.copy( planeIntersect.point ).sub( this.worldPositionStart );
-
-			if ( mode === 'translate' ) {
-
-				// Apply translate
-
-				this._offset.copy( this.pointEnd ).sub( this.pointStart );
-
-				if ( space === 'local' && axis !== 'XYZ' ) {
-
-					this._offset.applyQuaternion( this._worldQuaternionInv );
-
-				}
-
-				if ( axis.indexOf( 'X' ) === - 1 ) this._offset.x = 0;
-				if ( axis.indexOf( 'Y' ) === - 1 ) this._offset.y = 0;
-				if ( axis.indexOf( 'Z' ) === - 1 ) this._offset.z = 0;
-
-				if ( space === 'local' && axis !== 'XYZ' ) {
-
-					this._offset.applyQuaternion( this._quaternionStart ).divide( this._parentScale );
-
-				} else {
-
-					this._offset.applyQuaternion( this._parentQuaternionInv ).divide( this._parentScale );
-
-				}
-
-				object.position.copy( this._offset ).add( this._positionStart );
-
-				// Apply translation snap
-
-				if ( this.translationSnap ) {
-
-					if ( space === 'local' ) {
-
-						object.position.applyQuaternion( _tempQuaternion.copy( this._quaternionStart ).invert() );
-
-						if ( axis.search( 'X' ) !== - 1 ) {
-
-							object.position.x = Math.round( object.position.x / this.translationSnap ) * this.translationSnap;
-
-						}
-
-						if ( axis.search( 'Y' ) !== - 1 ) {
-
-							object.position.y = Math.round( object.position.y / this.translationSnap ) * this.translationSnap;
-
-						}
-
-						if ( axis.search( 'Z' ) !== - 1 ) {
-
-							object.position.z = Math.round( object.position.z / this.translationSnap ) * this.translationSnap;
-
-						}
-
-						object.position.applyQuaternion( this._quaternionStart );
-
-					}
-
-					if ( space === 'world' ) {
-
-						if ( object.parent ) {
-
-							object.position.add( _tempVector.setFromMatrixPosition( object.parent.matrixWorld ) );
-
-						}
-
-						if ( axis.search( 'X' ) !== - 1 ) {
-
-							object.position.x = Math.round( object.position.x / this.translationSnap ) * this.translationSnap;
-
-						}
-
-						if ( axis.search( 'Y' ) !== - 1 ) {
-
-							object.position.y = Math.round( object.position.y / this.translationSnap ) * this.translationSnap;
-
-						}
-
-						if ( axis.search( 'Z' ) !== - 1 ) {
-
-							object.position.z = Math.round( object.position.z / this.translationSnap ) * this.translationSnap;
-
-						}
-
-						if ( object.parent ) {
-
-							object.position.sub( _tempVector.setFromMatrixPosition( object.parent.matrixWorld ) );
-
-						}
-
-					}
-
-				}
-
-			} else if ( mode === 'scale' ) {
-
-				if ( axis.search( 'XYZ' ) !== - 1 ) {
-
-					let d = this.pointEnd.length() / this.pointStart.length();
-
-					if ( this.pointEnd.dot( this.pointStart ) < 0 ) d *= - 1;
-
-					_tempVector2.set( d, d, d );
-
-				} else {
-
-					_tempVector.copy( this.pointStart );
-					_tempVector2.copy( this.pointEnd );
-
-					_tempVector.applyQuaternion( this._worldQuaternionInv );
-					_tempVector2.applyQuaternion( this._worldQuaternionInv );
-
-					_tempVector2.divide( _tempVector );
-
-					if ( axis.search( 'X' ) === - 1 ) {
-
-						_tempVector2.x = 1;
-
-					}
-
-					if ( axis.search( 'Y' ) === - 1 ) {
-
-						_tempVector2.y = 1;
-
-					}
-
-					if ( axis.search( 'Z' ) === - 1 ) {
-
-						_tempVector2.z = 1;
-
-					}
-
-				}
-
-				// Apply scale
-
-				object.scale.copy( this._scaleStart ).multiply( _tempVector2 );
-
-				if ( this.scaleSnap ) {
-
-					if ( axis.search( 'X' ) !== - 1 ) {
-
-						object.scale.x = Math.round( object.scale.x / this.scaleSnap ) * this.scaleSnap || this.scaleSnap;
-
-					}
-
-					if ( axis.search( 'Y' ) !== - 1 ) {
-
-						object.scale.y = Math.round( object.scale.y / this.scaleSnap ) * this.scaleSnap || this.scaleSnap;
-
-					}
-
-					if ( axis.search( 'Z' ) !== - 1 ) {
-
-						object.scale.z = Math.round( object.scale.z / this.scaleSnap ) * this.scaleSnap || this.scaleSnap;
-
-					}
-
-				}
-
-			} else if ( mode === 'rotate' ) {
-
-				this._offset.copy( this.pointEnd ).sub( this.pointStart );
-
-				const ROTATION_SPEED = 20 / this.worldPosition.distanceTo( _tempVector.setFromMatrixPosition( this.camera.matrixWorld ) );
-
-				if ( axis === 'E' ) {
-
-					this.rotationAxis.copy( this.eye );
-					this.rotationAngle = this.pointEnd.angleTo( this.pointStart );
-
-					this._startNorm.copy( this.pointStart ).normalize();
-					this._endNorm.copy( this.pointEnd ).normalize();
-
-					this.rotationAngle *= ( this._endNorm.cross( this._startNorm ).dot( this.eye ) < 0 ? 1 : - 1 );
-
-				} else if ( axis === 'XYZE' ) {
-
-					this.rotationAxis.copy( this._offset ).cross( this.eye ).normalize();
-					this.rotationAngle = this._offset.dot( _tempVector.copy( this.rotationAxis ).cross( this.eye ) ) * ROTATION_SPEED;
-
-				} else if ( axis === 'X' || axis === 'Y' || axis === 'Z' ) {
-
-					this.rotationAxis.copy( _unit[ axis ] );
-
-					_tempVector.copy( _unit[ axis ] );
-
-					if ( space === 'local' ) {
-
-						_tempVector.applyQuaternion( this.worldQuaternion );
-
-					}
-
-					this.rotationAngle = this._offset.dot( _tempVector.cross( this.eye ).normalize() ) * ROTATION_SPEED;
-
-				}
-
-				// Apply rotation snap
-
-				if ( this.rotationSnap ) this.rotationAngle = Math.round( this.rotationAngle / this.rotationSnap ) * this.rotationSnap;
-
-				// Apply rotate
-				if ( space === 'local' && axis !== 'E' && axis !== 'XYZE' ) {
-
-					object.quaternion.copy( this._quaternionStart );
-					object.quaternion.multiply( _tempQuaternion.setFromAxisAngle( this.rotationAxis, this.rotationAngle ) ).normalize();
-
-				} else {
-
-					this.rotationAxis.applyQuaternion( this._parentQuaternionInv );
-					object.quaternion.copy( _tempQuaternion.setFromAxisAngle( this.rotationAxis, this.rotationAngle ) );
-					object.quaternion.multiply( this._quaternionStart ).normalize();
-
-				}
-
-			}
-
-			this.dispatchEvent( _changeEvent );
-			this.dispatchEvent( _objectChangeEvent );
-
-		}
-
-		pointerUp( pointer ) {
-
-			if ( pointer.button !== 0 ) return;
-
-			if ( this.dragging && ( this.axis !== null ) ) {
-
-				_mouseUpEvent.mode = this.mode;
-				this.dispatchEvent( _mouseUpEvent );
-
-			}
-
-			this.dragging = false;
-			this.axis = null;
-
-		}
-
-		dispose() {
-
-			this.domElement.removeEventListener( 'pointerdown', this._onPointerDown );
-			this.domElement.removeEventListener( 'pointermove', this._onPointerHover );
-			this.domElement.ownerDocument.removeEventListener( 'pointermove', this._onPointerMove );
-			this.domElement.ownerDocument.removeEventListener( 'pointerup', this._onPointerUp );
-
-			this.traverse( function ( child ) {
-
-				if ( child.geometry ) child.geometry.dispose();
-				if ( child.material ) child.material.dispose();
-
-			} );
-
-		}
-
-		// Set current object
-		attach( object ) {
-
-			this.object = object;
-			this.visible = true;
-
-			return this;
-
-		}
-
-		// Detatch from object
-		detach() {
-
-			this.object = undefined;
-			this.visible = false;
-			this.axis = null;
-
-			return this;
-
-		}
-
-		// TODO: deprecate
-
-		getMode() {
-
-			return this.mode;
-
-		}
-
-		setMode( mode ) {
-
-			this.mode = mode;
-
-		}
-
-		setTranslationSnap( translationSnap ) {
-
-			this.translationSnap = translationSnap;
-
-		}
-
-		setRotationSnap( rotationSnap ) {
-
-			this.rotationSnap = rotationSnap;
-
-		}
-
-		setScaleSnap( scaleSnap ) {
-
-			this.scaleSnap = scaleSnap;
-
-		}
-
-		setSize( size ) {
-
-			this.size = size;
-
-		}
-
-		setSpace( space ) {
-
-			this.space = space;
-
-		}
-
-		update() {
-
-			console.warn( 'THREE.TransformControls: update function has no more functionality and therefore has been deprecated.' );
-
-		}
-
-	}
-
-	TransformControls.prototype.isTransformControls = true;
-
-	// mouse / touch event handlers
-
-	function getPointer( event ) {
-
-		if ( this.domElement.ownerDocument.pointerLockElement ) {
-
-			return {
-				x: 0,
-				y: 0,
-				button: event.button
-			};
-
-		} else {
-
-			const pointer = event.changedTouches ? event.changedTouches[ 0 ] : event;
-
-			const rect = this.domElement.getBoundingClientRect();
-
-			return {
-				x: ( pointer.clientX - rect.left ) / rect.width * 2 - 1,
-				y: - ( pointer.clientY - rect.top ) / rect.height * 2 + 1,
-				button: event.button
-			};
-
-		}
-
-	}
-
-	function onPointerHover( event ) {
-
-		if ( ! this.enabled ) return;
-
-		switch ( event.pointerType ) {
-
-			case 'mouse':
-			case 'pen':
-				this.pointerHover( this._getPointer( event ) );
-				break;
-
-		}
-
-	}
-
-	function onPointerDown( event ) {
-
-		if ( ! this.enabled ) return;
-
-		this.domElement.style.touchAction = 'none'; // disable touch scroll
-		this.domElement.ownerDocument.addEventListener( 'pointermove', this._onPointerMove );
-
-		this.pointerHover( this._getPointer( event ) );
-		this.pointerDown( this._getPointer( event ) );
-
-	}
-
-	function onPointerMove( event ) {
-
-		if ( ! this.enabled ) return;
-
-		this.pointerMove( this._getPointer( event ) );
-
-	}
-
-	function onPointerUp( event ) {
-
-		if ( ! this.enabled ) return;
-
-		this.domElement.style.touchAction = '';
-		this.domElement.ownerDocument.removeEventListener( 'pointermove', this._onPointerMove );
-
-		this.pointerUp( this._getPointer( event ) );
-
-	}
-
-	function intersectObjectWithRay( object, raycaster, includeInvisible ) {
-
-		const allIntersections = raycaster.intersectObject( object, true );
-
-		for ( let i = 0; i < allIntersections.length; i ++ ) {
-
-			if ( allIntersections[ i ].object.visible || includeInvisible ) {
-
-				return allIntersections[ i ];
-
-			}
-
-		}
-
-		return false;
-
-	}
-
-	//
-
-	// Reusable utility variables
-
-	const _tempEuler = new Euler();
-	const _alignVector = new Vector3( 0, 1, 0 );
-	const _zeroVector = new Vector3( 0, 0, 0 );
-	const _lookAtMatrix = new Matrix4();
-	const _tempQuaternion2 = new Quaternion();
-	const _identityQuaternion = new Quaternion();
-	const _dirVector = new Vector3();
-	const _tempMatrix = new Matrix4();
-
-	const _unitX = new Vector3( 1, 0, 0 );
-	const _unitY = new Vector3( 0, 1, 0 );
-	const _unitZ = new Vector3( 0, 0, 1 );
-
-	const _v1 = new Vector3();
-	const _v2 = new Vector3();
-	const _v3 = new Vector3();
-
-	class TransformControlsGizmo extends Object3D {
-
-		constructor() {
-
-			super();
-
-			this.type = 'TransformControlsGizmo';
-
-			// shared materials
-
-			const gizmoMaterial = new MeshBasicMaterial( {
-				depthTest: false,
-				depthWrite: false,
-				transparent: true,
-				side: DoubleSide,
-				fog: false,
-				toneMapped: false
-			} );
-
-			const gizmoLineMaterial = new LineBasicMaterial( {
-				depthTest: false,
-				depthWrite: false,
-				transparent: true,
-				linewidth: 1,
-				fog: false,
-				toneMapped: false
-			} );
-
-			// Make unique material for each axis/color
-
-			const matInvisible = gizmoMaterial.clone();
-			matInvisible.opacity = 0.15;
-
-			const matHelper = gizmoMaterial.clone();
-			matHelper.opacity = 0.33;
-
-			const matRed = gizmoMaterial.clone();
-			matRed.color.set( 0xff0000 );
-
-			const matGreen = gizmoMaterial.clone();
-			matGreen.color.set( 0x00ff00 );
-
-			const matBlue = gizmoMaterial.clone();
-			matBlue.color.set( 0x0000ff );
-
-			const matWhiteTransparent = gizmoMaterial.clone();
-			matWhiteTransparent.opacity = 0.25;
-
-			const matYellowTransparent = matWhiteTransparent.clone();
-			matYellowTransparent.color.set( 0xffff00 );
-
-			const matCyanTransparent = matWhiteTransparent.clone();
-			matCyanTransparent.color.set( 0x00ffff );
-
-			const matMagentaTransparent = matWhiteTransparent.clone();
-			matMagentaTransparent.color.set( 0xff00ff );
-
-			const matYellow = gizmoMaterial.clone();
-			matYellow.color.set( 0xffff00 );
-
-			const matLineRed = gizmoLineMaterial.clone();
-			matLineRed.color.set( 0xff0000 );
-
-			const matLineGreen = gizmoLineMaterial.clone();
-			matLineGreen.color.set( 0x00ff00 );
-
-			const matLineBlue = gizmoLineMaterial.clone();
-			matLineBlue.color.set( 0x0000ff );
-
-			const matLineCyan = gizmoLineMaterial.clone();
-			matLineCyan.color.set( 0x00ffff );
-
-			const matLineMagenta = gizmoLineMaterial.clone();
-			matLineMagenta.color.set( 0xff00ff );
-
-			const matLineYellow = gizmoLineMaterial.clone();
-			matLineYellow.color.set( 0xffff00 );
-
-			const matLineGray = gizmoLineMaterial.clone();
-			matLineGray.color.set( 0x787878 );
-
-			const matLineYellowTransparent = matLineYellow.clone();
-			matLineYellowTransparent.opacity = 0.25;
-
-			// reusable geometry
-
-			const arrowGeometry = new CylinderGeometry( 0, 0.05, 0.2, 12, 1, false );
-
-			const scaleHandleGeometry = new BoxGeometry( 0.125, 0.125, 0.125 );
-
-			const lineGeometry = new BufferGeometry();
-			lineGeometry.setAttribute( 'position', new Float32BufferAttribute( [ 0, 0, 0,	1, 0, 0 ], 3 ) );
-
-			function CircleGeometry( radius, arc ) {
-
-				const geometry = new BufferGeometry( );
-				const vertices = [];
-
-				for ( let i = 0; i <= 64 * arc; ++ i ) {
-
-					vertices.push( 0, Math.cos( i / 32 * Math.PI ) * radius, Math.sin( i / 32 * Math.PI ) * radius );
-
-				}
-
-				geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-
-				return geometry;
-
-			}
-
-			// Special geometry for transform helper. If scaled with position vector it spans from [0,0,0] to position
-
-			function TranslateHelperGeometry() {
-
-				const geometry = new BufferGeometry();
-
-				geometry.setAttribute( 'position', new Float32BufferAttribute( [ 0, 0, 0, 1, 1, 1 ], 3 ) );
-
-				return geometry;
-
-			}
-
-			// Gizmo definitions - custom hierarchy definitions for setupGizmo() function
-
-			const gizmoTranslate = {
-				X: [
-					[ new Mesh( arrowGeometry, matRed ), [ 1, 0, 0 ], [ 0, 0, - Math.PI / 2 ], null, 'fwd' ],
-					[ new Mesh( arrowGeometry, matRed ), [ 1, 0, 0 ], [ 0, 0, Math.PI / 2 ], null, 'bwd' ],
-					[ new Line( lineGeometry, matLineRed ) ]
-				],
-				Y: [
-					[ new Mesh( arrowGeometry, matGreen ), [ 0, 1, 0 ], null, null, 'fwd' ],
-					[ new Mesh( arrowGeometry, matGreen ), [ 0, 1, 0 ], [ Math.PI, 0, 0 ], null, 'bwd' ],
-					[ new Line( lineGeometry, matLineGreen ), null, [ 0, 0, Math.PI / 2 ]]
-				],
-				Z: [
-					[ new Mesh( arrowGeometry, matBlue ), [ 0, 0, 1 ], [ Math.PI / 2, 0, 0 ], null, 'fwd' ],
-					[ new Mesh( arrowGeometry, matBlue ), [ 0, 0, 1 ], [ - Math.PI / 2, 0, 0 ], null, 'bwd' ],
-					[ new Line( lineGeometry, matLineBlue ), null, [ 0, - Math.PI / 2, 0 ]]
-				],
-				XYZ: [
-					[ new Mesh( new OctahedronGeometry( 0.1, 0 ), matWhiteTransparent.clone() ), [ 0, 0, 0 ], [ 0, 0, 0 ]]
-				],
-				XY: [
-					[ new Mesh( new PlaneGeometry( 0.295, 0.295 ), matYellowTransparent.clone() ), [ 0.15, 0.15, 0 ]],
-					[ new Line( lineGeometry, matLineYellow ), [ 0.18, 0.3, 0 ], null, [ 0.125, 1, 1 ]],
-					[ new Line( lineGeometry, matLineYellow ), [ 0.3, 0.18, 0 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]]
-				],
-				YZ: [
-					[ new Mesh( new PlaneGeometry( 0.295, 0.295 ), matCyanTransparent.clone() ), [ 0, 0.15, 0.15 ], [ 0, Math.PI / 2, 0 ]],
-					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.18, 0.3 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]],
-					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.3, 0.18 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
-				],
-				XZ: [
-					[ new Mesh( new PlaneGeometry( 0.295, 0.295 ), matMagentaTransparent.clone() ), [ 0.15, 0, 0.15 ], [ - Math.PI / 2, 0, 0 ]],
-					[ new Line( lineGeometry, matLineMagenta ), [ 0.18, 0, 0.3 ], null, [ 0.125, 1, 1 ]],
-					[ new Line( lineGeometry, matLineMagenta ), [ 0.3, 0, 0.18 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
-				]
-			};
-
-			const pickerTranslate = {
-				X: [
-					[ new Mesh( new CylinderGeometry( 0.2, 0, 1, 4, 1, false ), matInvisible ), [ 0.6, 0, 0 ], [ 0, 0, - Math.PI / 2 ]]
-				],
-				Y: [
-					[ new Mesh( new CylinderGeometry( 0.2, 0, 1, 4, 1, false ), matInvisible ), [ 0, 0.6, 0 ]]
-				],
-				Z: [
-					[ new Mesh( new CylinderGeometry( 0.2, 0, 1, 4, 1, false ), matInvisible ), [ 0, 0, 0.6 ], [ Math.PI / 2, 0, 0 ]]
-				],
-				XYZ: [
-					[ new Mesh( new OctahedronGeometry( 0.2, 0 ), matInvisible ) ]
-				],
-				XY: [
-					[ new Mesh( new PlaneGeometry( 0.4, 0.4 ), matInvisible ), [ 0.2, 0.2, 0 ]]
-				],
-				YZ: [
-					[ new Mesh( new PlaneGeometry( 0.4, 0.4 ), matInvisible ), [ 0, 0.2, 0.2 ], [ 0, Math.PI / 2, 0 ]]
-				],
-				XZ: [
-					[ new Mesh( new PlaneGeometry( 0.4, 0.4 ), matInvisible ), [ 0.2, 0, 0.2 ], [ - Math.PI / 2, 0, 0 ]]
-				]
-			};
-
-			const helperTranslate = {
-				START: [
-					[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
-				],
-				END: [
-					[ new Mesh( new OctahedronGeometry( 0.01, 2 ), matHelper ), null, null, null, 'helper' ]
-				],
-				DELTA: [
-					[ new Line( TranslateHelperGeometry(), matHelper ), null, null, null, 'helper' ]
-				],
-				X: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
-				],
-				Y: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ 0, - 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
-				],
-				Z: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, - 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
-				]
-			};
-
-			const gizmoRotate = {
-				X: [
-					[ new Line( CircleGeometry( 1, 0.5 ), matLineRed ) ],
-					[ new Mesh( new OctahedronGeometry( 0.04, 0 ), matRed ), [ 0, 0, 0.99 ], null, [ 1, 3, 1 ]],
-				],
-				Y: [
-					[ new Line( CircleGeometry( 1, 0.5 ), matLineGreen ), null, [ 0, 0, - Math.PI / 2 ]],
-					[ new Mesh( new OctahedronGeometry( 0.04, 0 ), matGreen ), [ 0, 0, 0.99 ], null, [ 3, 1, 1 ]],
-				],
-				Z: [
-					[ new Line( CircleGeometry( 1, 0.5 ), matLineBlue ), null, [ 0, Math.PI / 2, 0 ]],
-					[ new Mesh( new OctahedronGeometry( 0.04, 0 ), matBlue ), [ 0.99, 0, 0 ], null, [ 1, 3, 1 ]],
-				],
-				E: [
-					[ new Line( CircleGeometry( 1.25, 1 ), matLineYellowTransparent ), null, [ 0, Math.PI / 2, 0 ]],
-					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ 1.17, 0, 0 ], [ 0, 0, - Math.PI / 2 ], [ 1, 1, 0.001 ]],
-					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ - 1.17, 0, 0 ], [ 0, 0, Math.PI / 2 ], [ 1, 1, 0.001 ]],
-					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ 0, - 1.17, 0 ], [ Math.PI, 0, 0 ], [ 1, 1, 0.001 ]],
-					[ new Mesh( new CylinderGeometry( 0.03, 0, 0.15, 4, 1, false ), matLineYellowTransparent ), [ 0, 1.17, 0 ], [ 0, 0, 0 ], [ 1, 1, 0.001 ]],
-				],
-				XYZE: [
-					[ new Line( CircleGeometry( 1, 1 ), matLineGray ), null, [ 0, Math.PI / 2, 0 ]]
-				]
-			};
-
-			const helperRotate = {
-				AXIS: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
-				]
-			};
-
-			const pickerRotate = {
-				X: [
-					[ new Mesh( new TorusGeometry( 1, 0.1, 4, 24 ), matInvisible ), [ 0, 0, 0 ], [ 0, - Math.PI / 2, - Math.PI / 2 ]],
-				],
-				Y: [
-					[ new Mesh( new TorusGeometry( 1, 0.1, 4, 24 ), matInvisible ), [ 0, 0, 0 ], [ Math.PI / 2, 0, 0 ]],
-				],
-				Z: [
-					[ new Mesh( new TorusGeometry( 1, 0.1, 4, 24 ), matInvisible ), [ 0, 0, 0 ], [ 0, 0, - Math.PI / 2 ]],
-				],
-				E: [
-					[ new Mesh( new TorusGeometry( 1.25, 0.1, 2, 24 ), matInvisible ) ]
-				],
-				XYZE: [
-					[ new Mesh( new SphereGeometry( 0.7, 10, 8 ), matInvisible ) ]
-				]
-			};
-
-			const gizmoScale = {
-				X: [
-					[ new Mesh( scaleHandleGeometry, matRed ), [ 0.8, 0, 0 ], [ 0, 0, - Math.PI / 2 ]],
-					[ new Line( lineGeometry, matLineRed ), null, null, [ 0.8, 1, 1 ]]
-				],
-				Y: [
-					[ new Mesh( scaleHandleGeometry, matGreen ), [ 0, 0.8, 0 ]],
-					[ new Line( lineGeometry, matLineGreen ), null, [ 0, 0, Math.PI / 2 ], [ 0.8, 1, 1 ]]
-				],
-				Z: [
-					[ new Mesh( scaleHandleGeometry, matBlue ), [ 0, 0, 0.8 ], [ Math.PI / 2, 0, 0 ]],
-					[ new Line( lineGeometry, matLineBlue ), null, [ 0, - Math.PI / 2, 0 ], [ 0.8, 1, 1 ]]
-				],
-				XY: [
-					[ new Mesh( scaleHandleGeometry, matYellowTransparent ), [ 0.85, 0.85, 0 ], null, [ 2, 2, 0.2 ]],
-					[ new Line( lineGeometry, matLineYellow ), [ 0.855, 0.98, 0 ], null, [ 0.125, 1, 1 ]],
-					[ new Line( lineGeometry, matLineYellow ), [ 0.98, 0.855, 0 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]]
-				],
-				YZ: [
-					[ new Mesh( scaleHandleGeometry, matCyanTransparent ), [ 0, 0.85, 0.85 ], null, [ 0.2, 2, 2 ]],
-					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.855, 0.98 ], [ 0, 0, Math.PI / 2 ], [ 0.125, 1, 1 ]],
-					[ new Line( lineGeometry, matLineCyan ), [ 0, 0.98, 0.855 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
-				],
-				XZ: [
-					[ new Mesh( scaleHandleGeometry, matMagentaTransparent ), [ 0.85, 0, 0.85 ], null, [ 2, 0.2, 2 ]],
-					[ new Line( lineGeometry, matLineMagenta ), [ 0.855, 0, 0.98 ], null, [ 0.125, 1, 1 ]],
-					[ new Line( lineGeometry, matLineMagenta ), [ 0.98, 0, 0.855 ], [ 0, - Math.PI / 2, 0 ], [ 0.125, 1, 1 ]]
-				],
-				XYZX: [
-					[ new Mesh( new BoxGeometry( 0.125, 0.125, 0.125 ), matWhiteTransparent.clone() ), [ 1.1, 0, 0 ]],
-				],
-				XYZY: [
-					[ new Mesh( new BoxGeometry( 0.125, 0.125, 0.125 ), matWhiteTransparent.clone() ), [ 0, 1.1, 0 ]],
-				],
-				XYZZ: [
-					[ new Mesh( new BoxGeometry( 0.125, 0.125, 0.125 ), matWhiteTransparent.clone() ), [ 0, 0, 1.1 ]],
-				]
-			};
-
-			const pickerScale = {
-				X: [
-					[ new Mesh( new CylinderGeometry( 0.2, 0, 0.8, 4, 1, false ), matInvisible ), [ 0.5, 0, 0 ], [ 0, 0, - Math.PI / 2 ]]
-				],
-				Y: [
-					[ new Mesh( new CylinderGeometry( 0.2, 0, 0.8, 4, 1, false ), matInvisible ), [ 0, 0.5, 0 ]]
-				],
-				Z: [
-					[ new Mesh( new CylinderGeometry( 0.2, 0, 0.8, 4, 1, false ), matInvisible ), [ 0, 0, 0.5 ], [ Math.PI / 2, 0, 0 ]]
-				],
-				XY: [
-					[ new Mesh( scaleHandleGeometry, matInvisible ), [ 0.85, 0.85, 0 ], null, [ 3, 3, 0.2 ]],
-				],
-				YZ: [
-					[ new Mesh( scaleHandleGeometry, matInvisible ), [ 0, 0.85, 0.85 ], null, [ 0.2, 3, 3 ]],
-				],
-				XZ: [
-					[ new Mesh( scaleHandleGeometry, matInvisible ), [ 0.85, 0, 0.85 ], null, [ 3, 0.2, 3 ]],
-				],
-				XYZX: [
-					[ new Mesh( new BoxGeometry( 0.2, 0.2, 0.2 ), matInvisible ), [ 1.1, 0, 0 ]],
-				],
-				XYZY: [
-					[ new Mesh( new BoxGeometry( 0.2, 0.2, 0.2 ), matInvisible ), [ 0, 1.1, 0 ]],
-				],
-				XYZZ: [
-					[ new Mesh( new BoxGeometry( 0.2, 0.2, 0.2 ), matInvisible ), [ 0, 0, 1.1 ]],
-				]
-			};
-
-			const helperScale = {
-				X: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ - 1e3, 0, 0 ], null, [ 1e6, 1, 1 ], 'helper' ]
-				],
-				Y: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ 0, - 1e3, 0 ], [ 0, 0, Math.PI / 2 ], [ 1e6, 1, 1 ], 'helper' ]
-				],
-				Z: [
-					[ new Line( lineGeometry, matHelper.clone() ), [ 0, 0, - 1e3 ], [ 0, - Math.PI / 2, 0 ], [ 1e6, 1, 1 ], 'helper' ]
-				]
-			};
-
-			// Creates an Object3D with gizmos described in custom hierarchy definition.
-
-			function setupGizmo( gizmoMap ) {
-
-				const gizmo = new Object3D();
-
-				for ( const name in gizmoMap ) {
-
-					for ( let i = gizmoMap[ name ].length; i --; ) {
-
-						const object = gizmoMap[ name ][ i ][ 0 ].clone();
-						const position = gizmoMap[ name ][ i ][ 1 ];
-						const rotation = gizmoMap[ name ][ i ][ 2 ];
-						const scale = gizmoMap[ name ][ i ][ 3 ];
-						const tag = gizmoMap[ name ][ i ][ 4 ];
-
-						// name and tag properties are essential for picking and updating logic.
-						object.name = name;
-						object.tag = tag;
-
-						if ( position ) {
-
-							object.position.set( position[ 0 ], position[ 1 ], position[ 2 ] );
-
-						}
-
-						if ( rotation ) {
-
-							object.rotation.set( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] );
-
-						}
-
-						if ( scale ) {
-
-							object.scale.set( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
-
-						}
-
-						object.updateMatrix();
-
-						const tempGeometry = object.geometry.clone();
-						tempGeometry.applyMatrix4( object.matrix );
-						object.geometry = tempGeometry;
-						object.renderOrder = Infinity;
-
-						object.position.set( 0, 0, 0 );
-						object.rotation.set( 0, 0, 0 );
-						object.scale.set( 1, 1, 1 );
-
-						gizmo.add( object );
-
-					}
-
-				}
-
-				return gizmo;
-
-			}
-
-			// Gizmo creation
-
-			this.gizmo = {};
-			this.picker = {};
-			this.helper = {};
-
-			this.add( this.gizmo[ 'translate' ] = setupGizmo( gizmoTranslate ) );
-			this.add( this.gizmo[ 'rotate' ] = setupGizmo( gizmoRotate ) );
-			this.add( this.gizmo[ 'scale' ] = setupGizmo( gizmoScale ) );
-			this.add( this.picker[ 'translate' ] = setupGizmo( pickerTranslate ) );
-			this.add( this.picker[ 'rotate' ] = setupGizmo( pickerRotate ) );
-			this.add( this.picker[ 'scale' ] = setupGizmo( pickerScale ) );
-			this.add( this.helper[ 'translate' ] = setupGizmo( helperTranslate ) );
-			this.add( this.helper[ 'rotate' ] = setupGizmo( helperRotate ) );
-			this.add( this.helper[ 'scale' ] = setupGizmo( helperScale ) );
-
-			// Pickers should be hidden always
-
-			this.picker[ 'translate' ].visible = false;
-			this.picker[ 'rotate' ].visible = false;
-			this.picker[ 'scale' ].visible = false;
-
-		}
-
-		// updateMatrixWorld will update transformations and appearance of individual handles
-
-		updateMatrixWorld( force ) {
-
-			const space = ( this.mode === 'scale' ) ? this.space : 'local'; // scale always oriented to local rotation
-
-			const quaternion = ( space === 'local' ) ? this.worldQuaternion : _identityQuaternion;
-
-			// Show only gizmos for current transform mode
-
-			this.gizmo[ 'translate' ].visible = this.mode === 'translate';
-			this.gizmo[ 'rotate' ].visible = this.mode === 'rotate';
-			this.gizmo[ 'scale' ].visible = this.mode === 'scale';
-
-			this.helper[ 'translate' ].visible = this.mode === 'translate';
-			this.helper[ 'rotate' ].visible = this.mode === 'rotate';
-			this.helper[ 'scale' ].visible = this.mode === 'scale';
-
-
-			let handles = [];
-			handles = handles.concat( this.picker[ this.mode ].children );
-			handles = handles.concat( this.gizmo[ this.mode ].children );
-			handles = handles.concat( this.helper[ this.mode ].children );
-
-			for ( let i = 0; i < handles.length; i ++ ) {
-
-				const handle = handles[ i ];
-
-				// hide aligned to camera
-
-				handle.visible = true;
-				handle.rotation.set( 0, 0, 0 );
-				handle.position.copy( this.worldPosition );
-
-				let factor;
-
-				if ( this.camera.isOrthographicCamera ) {
-
-					factor = ( this.camera.top - this.camera.bottom ) / this.camera.zoom;
-
-				} else {
-
-					factor = this.worldPosition.distanceTo( this.cameraPosition ) * Math.min( 1.9 * Math.tan( Math.PI * this.camera.fov / 360 ) / this.camera.zoom, 7 );
-
-				}
-
-				handle.scale.set( 1, 1, 1 ).multiplyScalar( factor * this.size / 7 );
-
-				// TODO: simplify helpers and consider decoupling from gizmo
-
-				if ( handle.tag === 'helper' ) {
-
-					handle.visible = false;
-
-					if ( handle.name === 'AXIS' ) {
-
-						handle.position.copy( this.worldPositionStart );
-						handle.visible = !! this.axis;
-
-						if ( this.axis === 'X' ) {
-
-							_tempQuaternion.setFromEuler( _tempEuler.set( 0, 0, 0 ) );
-							handle.quaternion.copy( quaternion ).multiply( _tempQuaternion );
-
-							if ( Math.abs( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) ) > 0.9 ) {
-
-								handle.visible = false;
-
-							}
-
-						}
-
-						if ( this.axis === 'Y' ) {
-
-							_tempQuaternion.setFromEuler( _tempEuler.set( 0, 0, Math.PI / 2 ) );
-							handle.quaternion.copy( quaternion ).multiply( _tempQuaternion );
-
-							if ( Math.abs( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) ) > 0.9 ) {
-
-								handle.visible = false;
-
-							}
-
-						}
-
-						if ( this.axis === 'Z' ) {
-
-							_tempQuaternion.setFromEuler( _tempEuler.set( 0, Math.PI / 2, 0 ) );
-							handle.quaternion.copy( quaternion ).multiply( _tempQuaternion );
-
-							if ( Math.abs( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) ) > 0.9 ) {
-
-								handle.visible = false;
-
-							}
-
-						}
-
-						if ( this.axis === 'XYZE' ) {
-
-							_tempQuaternion.setFromEuler( _tempEuler.set( 0, Math.PI / 2, 0 ) );
-							_alignVector.copy( this.rotationAxis );
-							handle.quaternion.setFromRotationMatrix( _lookAtMatrix.lookAt( _zeroVector, _alignVector, _unitY ) );
-							handle.quaternion.multiply( _tempQuaternion );
-							handle.visible = this.dragging;
-
-						}
-
-						if ( this.axis === 'E' ) {
-
-							handle.visible = false;
-
-						}
-
-
-					} else if ( handle.name === 'START' ) {
-
-						handle.position.copy( this.worldPositionStart );
-						handle.visible = this.dragging;
-
-					} else if ( handle.name === 'END' ) {
-
-						handle.position.copy( this.worldPosition );
-						handle.visible = this.dragging;
-
-					} else if ( handle.name === 'DELTA' ) {
-
-						handle.position.copy( this.worldPositionStart );
-						handle.quaternion.copy( this.worldQuaternionStart );
-						_tempVector.set( 1e-10, 1e-10, 1e-10 ).add( this.worldPositionStart ).sub( this.worldPosition ).multiplyScalar( - 1 );
-						_tempVector.applyQuaternion( this.worldQuaternionStart.clone().invert() );
-						handle.scale.copy( _tempVector );
-						handle.visible = this.dragging;
-
-					} else {
-
-						handle.quaternion.copy( quaternion );
-
-						if ( this.dragging ) {
-
-							handle.position.copy( this.worldPositionStart );
-
-						} else {
-
-							handle.position.copy( this.worldPosition );
-
-						}
-
-						if ( this.axis ) {
-
-							handle.visible = this.axis.search( handle.name ) !== - 1;
-
-						}
-
-					}
-
-					// If updating helper, skip rest of the loop
-					continue;
-
-				}
-
-				// Align handles to current local or world rotation
-
-				handle.quaternion.copy( quaternion );
-
-				if ( this.mode === 'translate' || this.mode === 'scale' ) {
-
-					// Hide translate and scale axis facing the camera
-
-					const AXIS_HIDE_TRESHOLD = 0.99;
-					const PLANE_HIDE_TRESHOLD = 0.2;
-					const AXIS_FLIP_TRESHOLD = 0.0;
-
-					if ( handle.name === 'X' || handle.name === 'XYZX' ) {
-
-						if ( Math.abs( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) ) > AXIS_HIDE_TRESHOLD ) {
-
-							handle.scale.set( 1e-10, 1e-10, 1e-10 );
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name === 'Y' || handle.name === 'XYZY' ) {
-
-						if ( Math.abs( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) ) > AXIS_HIDE_TRESHOLD ) {
-
-							handle.scale.set( 1e-10, 1e-10, 1e-10 );
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name === 'Z' || handle.name === 'XYZZ' ) {
-
-						if ( Math.abs( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) ) > AXIS_HIDE_TRESHOLD ) {
-
-							handle.scale.set( 1e-10, 1e-10, 1e-10 );
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name === 'XY' ) {
-
-						if ( Math.abs( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) ) < PLANE_HIDE_TRESHOLD ) {
-
-							handle.scale.set( 1e-10, 1e-10, 1e-10 );
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name === 'YZ' ) {
-
-						if ( Math.abs( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) ) < PLANE_HIDE_TRESHOLD ) {
-
-							handle.scale.set( 1e-10, 1e-10, 1e-10 );
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name === 'XZ' ) {
-
-						if ( Math.abs( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) ) < PLANE_HIDE_TRESHOLD ) {
-
-							handle.scale.set( 1e-10, 1e-10, 1e-10 );
-							handle.visible = false;
-
-						}
-
-					}
-
-					// Flip translate and scale axis ocluded behind another axis
-
-					if ( handle.name.search( 'X' ) !== - 1 ) {
-
-						if ( _alignVector.copy( _unitX ).applyQuaternion( quaternion ).dot( this.eye ) < AXIS_FLIP_TRESHOLD ) {
-
-							if ( handle.tag === 'fwd' ) {
-
-								handle.visible = false;
-
-							} else {
-
-								handle.scale.x *= - 1;
-
-							}
-
-						} else if ( handle.tag === 'bwd' ) {
-
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name.search( 'Y' ) !== - 1 ) {
-
-						if ( _alignVector.copy( _unitY ).applyQuaternion( quaternion ).dot( this.eye ) < AXIS_FLIP_TRESHOLD ) {
-
-							if ( handle.tag === 'fwd' ) {
-
-								handle.visible = false;
-
-							} else {
-
-								handle.scale.y *= - 1;
-
-							}
-
-						} else if ( handle.tag === 'bwd' ) {
-
-							handle.visible = false;
-
-						}
-
-					}
-
-					if ( handle.name.search( 'Z' ) !== - 1 ) {
-
-						if ( _alignVector.copy( _unitZ ).applyQuaternion( quaternion ).dot( this.eye ) < AXIS_FLIP_TRESHOLD ) {
-
-							if ( handle.tag === 'fwd' ) {
-
-								handle.visible = false;
-
-							} else {
-
-								handle.scale.z *= - 1;
-
-							}
-
-						} else if ( handle.tag === 'bwd' ) {
-
-							handle.visible = false;
-
-						}
-
-					}
-
-				} else if ( this.mode === 'rotate' ) {
-
-					// Align handles to current local or world rotation
-
-					_tempQuaternion2.copy( quaternion );
-					_alignVector.copy( this.eye ).applyQuaternion( _tempQuaternion.copy( quaternion ).invert() );
-
-					if ( handle.name.search( 'E' ) !== - 1 ) {
-
-						handle.quaternion.setFromRotationMatrix( _lookAtMatrix.lookAt( this.eye, _zeroVector, _unitY ) );
-
-					}
-
-					if ( handle.name === 'X' ) {
-
-						_tempQuaternion.setFromAxisAngle( _unitX, Math.atan2( - _alignVector.y, _alignVector.z ) );
-						_tempQuaternion.multiplyQuaternions( _tempQuaternion2, _tempQuaternion );
-						handle.quaternion.copy( _tempQuaternion );
-
-					}
-
-					if ( handle.name === 'Y' ) {
-
-						_tempQuaternion.setFromAxisAngle( _unitY, Math.atan2( _alignVector.x, _alignVector.z ) );
-						_tempQuaternion.multiplyQuaternions( _tempQuaternion2, _tempQuaternion );
-						handle.quaternion.copy( _tempQuaternion );
-
-					}
-
-					if ( handle.name === 'Z' ) {
-
-						_tempQuaternion.setFromAxisAngle( _unitZ, Math.atan2( _alignVector.y, _alignVector.x ) );
-						_tempQuaternion.multiplyQuaternions( _tempQuaternion2, _tempQuaternion );
-						handle.quaternion.copy( _tempQuaternion );
-
-					}
-
-				}
-
-				// Hide disabled axes
-				handle.visible = handle.visible && ( handle.name.indexOf( 'X' ) === - 1 || this.showX );
-				handle.visible = handle.visible && ( handle.name.indexOf( 'Y' ) === - 1 || this.showY );
-				handle.visible = handle.visible && ( handle.name.indexOf( 'Z' ) === - 1 || this.showZ );
-				handle.visible = handle.visible && ( handle.name.indexOf( 'E' ) === - 1 || ( this.showX && this.showY && this.showZ ) );
-
-				// highlight selected axis
-
-				handle.material._opacity = handle.material._opacity || handle.material.opacity;
-				handle.material._color = handle.material._color || handle.material.color.clone();
-
-				handle.material.color.copy( handle.material._color );
-				handle.material.opacity = handle.material._opacity;
-
-				if ( ! this.enabled ) {
-
-					handle.material.opacity *= 0.5;
-					handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
-
-				} else if ( this.axis ) {
-
-					if ( handle.name === this.axis ) {
-
-						handle.material.opacity = 1.0;
-						handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
-
-					} else if ( this.axis.split( '' ).some( function ( a ) {
-
-						return handle.name === a;
-
-					} ) ) {
-
-						handle.material.opacity = 1.0;
-						handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
-
-					} else {
-
-						handle.material.opacity *= 0.25;
-						handle.material.color.lerp( new Color( 1, 1, 1 ), 0.5 );
-
-					}
-
-				}
-
-			}
-
-			super.updateMatrixWorld( force );
-
-		}
-
-	}
-
-	TransformControlsGizmo.prototype.isTransformControlsGizmo = true;
-
-	//
-
-	class TransformControlsPlane extends Mesh {
-
-		constructor() {
-
-			super(
-				new PlaneGeometry( 100000, 100000, 2, 2 ),
-				new MeshBasicMaterial( { visible: false, wireframe: true, side: DoubleSide, transparent: true, opacity: 0.1, toneMapped: false } )
-			);
-
-			this.type = 'TransformControlsPlane';
-
-		}
-
-		updateMatrixWorld( force ) {
-
-			let space = this.space;
-
-			this.position.copy( this.worldPosition );
-
-			if ( this.mode === 'scale' ) space = 'local'; // scale always oriented to local rotation
-
-			_v1.copy( _unitX ).applyQuaternion( space === 'local' ? this.worldQuaternion : _identityQuaternion );
-			_v2.copy( _unitY ).applyQuaternion( space === 'local' ? this.worldQuaternion : _identityQuaternion );
-			_v3.copy( _unitZ ).applyQuaternion( space === 'local' ? this.worldQuaternion : _identityQuaternion );
-
-			// Align the plane for current transform mode, axis and space.
-
-			_alignVector.copy( _v2 );
-
-			switch ( this.mode ) {
-
-				case 'translate':
-				case 'scale':
-					switch ( this.axis ) {
-
-						case 'X':
-							_alignVector.copy( this.eye ).cross( _v1 );
-							_dirVector.copy( _v1 ).cross( _alignVector );
-							break;
-						case 'Y':
-							_alignVector.copy( this.eye ).cross( _v2 );
-							_dirVector.copy( _v2 ).cross( _alignVector );
-							break;
-						case 'Z':
-							_alignVector.copy( this.eye ).cross( _v3 );
-							_dirVector.copy( _v3 ).cross( _alignVector );
-							break;
-						case 'XY':
-							_dirVector.copy( _v3 );
-							break;
-						case 'YZ':
-							_dirVector.copy( _v1 );
-							break;
-						case 'XZ':
-							_alignVector.copy( _v3 );
-							_dirVector.copy( _v2 );
-							break;
-						case 'XYZ':
-						case 'E':
-							_dirVector.set( 0, 0, 0 );
-							break;
-
-					}
-
-					break;
-				case 'rotate':
-				default:
-					// special case for rotate
-					_dirVector.set( 0, 0, 0 );
-
-			}
-
-			if ( _dirVector.length() === 0 ) {
-
-				// If in rotate mode, make the plane parallel to camera
-				this.quaternion.copy( this.cameraQuaternion );
-
-			} else {
-
-				_tempMatrix.lookAt( _tempVector.set( 0, 0, 0 ), _dirVector, _alignVector );
-
-				this.quaternion.setFromRotationMatrix( _tempMatrix );
-
-			}
-
-			super.updateMatrixWorld( force );
-
-		}
-
-	}
-
-	TransformControlsPlane.prototype.isTransformControlsPlane = true;
-
-	class ClippingComponent extends Component {
-	    constructor(viewer) {
-	        super(viewer);
-	        this.dragging = false;
-	        this.enabled = false;
-	        this.planes = [];
-	        this.handleDblClick = () => {
-	            if (!this.dragging && this.enabled) {
-	                this.createPlaneFromRaycaster();
-	            }
-	        };
-	        this.handleKeyDown = (event) => {
-	            if (!this.active)
-	                return;
-	            // Deleting a plane
-	            if (event.code == 'Delete') {
-	                this.raycaster.setFromCamera(this.viewer.mouse, this.camera);
-	                const planeMeshes = this.planes.map((plane) => plane.planeMesh);
-	                const intersects = this.raycaster.intersectObjects(planeMeshes, false);
-	                if (intersects.length > 0) {
-	                    const matchingPlane = this.planes.find((plane) => plane.planeMesh === intersects[0].object);
-	                    if (matchingPlane) {
-	                        this.deletePlane(matchingPlane);
-	                    }
-	                }
-	            }
-	        };
-	        this.createPlaneFromRaycaster = () => {
-	            this.raycaster.setFromCamera(this.viewer.mouse, this.camera);
-	            const intersects = this.raycaster.intersectObjects(this.viewer.ifcObjects, true);
-	            if (intersects.length > 0) {
-	                this.createPlaneFromIntersection(intersects[0]);
-	                this.intersection = undefined;
-	            }
-	        };
-	        this.createPlaneFromIntersection = (intersection) => {
-	            var _a;
-	            const constant = intersection.point.distanceTo(new Vector3(0, 0, 0));
-	            const normal = (_a = intersection.face) === null || _a === void 0 ? void 0 : _a.normal;
-	            if (constant && normal) {
-	                const normalMatrix = new Matrix3().getNormalMatrix(intersection.object.matrixWorld);
-	                const worldNormal = normal.clone().applyMatrix3(normalMatrix).normalize();
-	                const handleStartDragging = () => this.dragging = true;
-	                const handleEndDragging = () => this.dragging = false;
-	                const plane = new Plane(this.viewer, intersection.point, worldNormal, handleStartDragging, handleEndDragging);
-	                plane.plane.setFromNormalAndCoplanarPoint(worldNormal.negate(), intersection.point);
-	                this.planes.push(plane);
-	                this.updateMaterials();
-	            }
-	        };
-	        this.updateMaterials = () => {
-	            // This could be improved.
-	            // Applying clipping to IfcObjects only
-	            const activePlanes = this.planes.filter((plane) => plane.visible);
-	            this.viewer.ifcObjects.forEach((obj) => {
-	                const mesh = obj;
-	                if (mesh.material) {
-	                    if (Array.isArray(mesh.material)) {
-	                        mesh.material.forEach((m) => {
-	                            m.clippingPlanes = activePlanes.map((e) => e.plane);
-	                        });
-	                    }
-	                    else if (mesh.material) {
-	                        mesh.material.clippingPlanes = activePlanes.map((e) => e.plane);
-	                    }
-	                }
-	            });
-	        };
-	        this.deletePlane = (plane) => {
-	            const index = this.planes.indexOf(plane);
-	            if (index !== -1) {
-	                plane.removeFromScene();
-	                this.planes.splice(index, 1);
-	                this.updateMaterials();
-	            }
-	        };
-	        this.scene = viewer.scene;
-	        this.camera = viewer.camera;
-	        this.raycaster = new Raycaster();
-	        const canvas = viewer.renderer.domElement;
-	        canvas.ondblclick = this.handleDblClick;
-	        // This doesn't seem to work with canvas.onkeydown
-	        window.onkeydown = this.handleKeyDown;
-	    }
-	    get active() {
-	        return this.enabled;
-	    }
-	    set active(state) {
-	        console.log('Clipping Active: ' + state);
-	        this.enabled = state;
-	        this.planes.forEach((plane) => {
-	            plane.visible = state;
-	        });
-	        this.updateMaterials();
-	    }
-	}
-	class Plane extends Component {
-	    constructor(viewer, origin, normal, onStartDragging, onEndDragging) {
-	        super(viewer);
-	        this._visible = true;
-	        this.removeFromScene = () => {
-	            this.scene.remove(this._control_object);
-	            this.scene.remove(this._transform_controls);
-	        };
-	        this.scene = viewer.scene;
-	        this.camera = viewer.camera;
-	        const plane = new Plane$1();
-	        const constant = plane.constant;
-	        // A 'empty' to help with some transformations
-	        // Can also be used to house visual helpers -- see below
-	        const controlObject = new Object3D();
-	        controlObject.lookAt(normal);
-	        controlObject.position.copy(origin);
-	        this.scene.add(controlObject);
-	        // A visual helper for the user to see the plan
-	        const planeGeometry = new PlaneGeometry(5, 5, 1);
-	        const planeMaterial = new MeshBasicMaterial({
-	            color: 0xffff00, side: DoubleSide,
+	    initializeDefMaterial(color, opacity) {
+	        return new MeshLambertMaterial({
+	            color,
+	            opacity,
 	            transparent: true,
-	            opacity: 0.2
+	            depthTest: false,
+	            side: DoubleSide
 	        });
-	        const planeMesh = new Mesh(planeGeometry, planeMaterial);
-	        controlObject.add(planeMesh);
-	        //The transform controls to move the plane
-	        const controls = new TransformControls(this.camera, this.viewer.renderer.domElement);
-	        controls.attach(controlObject);
-	        controls.showX = false;
-	        controls.showY = false;
-	        controls.setSpace('local');
-	        this.scene.add(controls);
-	        controls.addEventListener('change', () => {
-	            plane.setFromNormalAndCoplanarPoint(normal, controlObject.position);
-	        });
-	        controls.addEventListener('dragging-changed', (event) => {
-	            //Disable camera movement when dragging
-	            this.viewer.controls.enabled = !event.value;
-	            this.visible = this.viewer.controls.enabled;
-	            // Invoke the start/end drag events
-	            event.value ? onStartDragging() : onEndDragging();
-	        });
-	        this._plane = plane;
-	        this._constant = constant;
-	        this._control_object = controlObject;
-	        this._transform_controls = controls;
-	        this._planeGeometry = planeGeometry;
-	        this._planeMaterial = planeMaterial;
-	        this._planeMesh = planeMesh;
-	    }
-	    get visible() {
-	        return this._visible;
-	    }
-	    set visible(visible) {
-	        this._visible = visible;
-	        this._control_object.visible = visible;
-	        this._transform_controls.visible = visible;
-	    }
-	    get plane() {
-	        return this._plane;
-	    }
-	    get planeMesh() {
-	        return this._planeMesh;
 	    }
 	}
 
-	const lineMaterial = new LineBasicMaterial({
-	    color: 0x555555
-	});
-	const whiteMaterial = new MeshBasicMaterial({
-	    color: 0xffffff, side: DoubleSide
-	});
-	const invisibleMaterial = new MeshBasicMaterial({
-	    color: 0xffffff,
-	    transparent: true,
-	    opacity: 0
-	});
-	class Edges extends Component {
-	    constructor(viewer) {
-	        super(viewer);
-	        this.active = false;
-	        this.activateEdgeDisplay = () => {
-	            this.active = true;
-	            this.viewer.ifcObjects.forEach((object) => {
-	                object.traverse((item) => {
-	                    if (item.type === 'Mesh') {
-	                        const mesh = item;
-	                        if (!mesh.ifcMaterial)
-	                            mesh.ifcMaterial = mesh.material;
-	                        mesh.wireframe ? (mesh.wireframe.visible = true) : (mesh.wireframe = this.getEdges(mesh));
-	                        mesh.add(mesh.wireframe);
-	                        // @ts-ignore
-	                        if (!mesh.isSelected) {
-	                            // @ts-ignore
-	                            mesh.material = mesh.material.transparent ? invisibleMaterial : whiteMaterial;
-	                        }
-	                    }
-	                });
-	            });
-	        };
-	        this.deactivateEdgeDisplay = () => {
-	            this.active = false;
-	            this.viewer.ifcObjects.forEach((object) => {
-	                object.traverse((item) => {
-	                    if (item.type === 'Mesh') {
-	                        const mesh = item;
-	                        // @ts-ignore
-	                        if (mesh.wireframe)
-	                            mesh.wireframe.visible = false;
-	                        // @ts-ignore
-	                        if (!mesh.isSelected)
-	                            mesh.material = mesh.ifcMaterial;
-	                    }
-	                });
-	            });
-	        };
-	        this.getEdges = (item) => {
-	            const geometry = new EdgesGeometry(item.geometry);
-	            return new LineSegments(geometry, lineMaterial);
-	        };
-	    }
-	}
-
-	class DropboxAPI extends Component {
-	    constructor(viewer) {
-	        super(viewer);
+	class DropboxAPI extends IfcComponent {
+	    constructor(context, loader) {
+	        super(context);
 	        this.onDBChooserSuccess = async (files) => {
 	            const rawResponse = await fetch(files[0].link);
 	            const result = await rawResponse.text();
 	            const ifcBlob = new Blob([result], { type: 'text/plain' });
-	            const ifcFile = new File([ifcBlob], "ifcFile");
-	            this.viewer.loadIfc(ifcFile);
+	            const file = new File([ifcBlob], 'ifcFile');
+	            this.loader.loadIfc(file);
 	        };
-	        this.chooserOptions = {
-	            success: this.onDBChooserSuccess,
-	            cancel: this.onDBChooserCancel,
-	            linkType: 'direct',
-	            multiselect: false,
-	            extensions: ['.ifc'],
-	            folderselect: false
+	        this.getOptions = () => {
+	            return {
+	                success: this.onDBChooserSuccess,
+	                cancel: this.onDBChooserCancel,
+	                linkType: 'direct',
+	                multiselect: false,
+	                extensions: ['.ifc'],
+	                folderselect: false
+	            };
 	        };
+	        this.loader = loader;
+	        this.counter = 0;
 	        this.initializeAPI();
 	    }
 	    loadDropboxIfc() {
-	        //@ts-ignore
-	        Dropbox.choose(this.chooserOptions);
+	        this.openDropboxChooser(this.getOptions());
 	    }
-	    onDBChooserCancel(files) {
+	    openDropboxChooser(options) {
+	        try {
+	            if (Dropbox) {
+	                Dropbox.choose(this.getOptions());
+	                return clearTimeout(this.tid);
+	            }
+	        }
+	        catch (error) {
+	            if (this.counter++ > 9)
+	                return this.errorOnConnection();
+	            this.tid = setTimeout(() => this.openDropboxChooser(options), 2000);
+	        }
+	        return null;
+	    }
+	    errorOnConnection() {
+	        console.error('Error: could not communicate with dropbox');
+	        clearTimeout(this.tid);
+	    }
+	    onDBChooserCancel(_files) {
 	        console.log('Canceled!');
 	    }
 	    initializeAPI() {
-	        var script = document.createElement('script');
+	        const script = document.createElement('script');
 	        script.type = 'text/javascript';
 	        script.src = 'https://www.dropbox.com/static/api/2/dropins.js';
 	        script.id = 'dropboxjs';
 	        script.setAttribute('data-app-key', 'iej3z16hhyca35a');
 	        document.getElementsByTagName('head')[0].appendChild(script);
+	    }
+	}
+
+	class IfcViewerAPI {
+	    constructor(options) {
+	        this.addClippingPlane = () => {
+	            this.clipper.createPlane();
+	        };
+	        this.removeClippingPlane = () => {
+	            this.clipper.deletePlane();
+	        };
+	        this.toggleClippingPlanes = () => {
+	            this.clipper.active = !this.clipper.active;
+	        };
+	        // toggleEdgesDisplay = () => {
+	        //   if(!this.edges) this.edges
+	        // }
+	        this.loadIfc = async (file) => {
+	            this.ifcManager.loadIfc(file);
+	        };
+	        this.loadIfcUrl = async (fileUrl) => {
+	            this.ifcManager.loadIfcUrl(fileUrl);
+	        };
+	        this.pickIfcItem = () => {
+	            return this.ifcManager.pickIfcItem();
+	        };
+	        this.prepickIfcItem = () => {
+	            this.ifcManager.prePickIfcItem();
+	        };
+	        this.getSpatialStructure = (modelID) => {
+	            return this.ifcManager.getSpatialStructure(modelID);
+	        };
+	        if (!options.container)
+	            throw new Error('Could not get container element!');
+	        this.context = new IfcContext$1(options);
+	        this.ifcManager = new IfcManager(this.context);
+	        this.clipper = new IfcClipper(this.context);
+	    }
+	    addGrid(size, divisions, colorCenterLine, colorGrid) {
+	        this.grid = new IfcGrid$1(this.context, size, divisions, colorCenterLine, colorGrid);
+	    }
+	    addAxes(size) {
+	        this.axes = new IfcAxes(this.context, size);
+	    }
+	    addStats(css = '') {
+	        this.stats = new IfcStats(this.context);
+	        this.stats.addStats(css);
+	    }
+	    getModelID() {
+	        return this.ifcManager.getModelId();
+	    }
+	    getProperties(modelID, id, indirect = false) {
+	        return this.ifcManager.getProperties(modelID, id, indirect);
+	    }
+	    getAllItemsOfType(modelID, type, verbose = true) {
+	        return this.ifcManager.getAllItemsOfType(modelID, type, verbose);
+	    }
+	    setWasmPath(path) {
+	        this.ifcManager.setWasmPath(path);
+	    }
+	    pickIfcItemByID(modelID, id) {
+	        this.ifcManager.pickIfcItemByID(modelID, id);
+	    }
+	    openDropboxWindow() {
+	        var _a;
+	        if (!this.dropbox)
+	            this.dropbox = new DropboxAPI(this.context, this.ifcManager);
+	        (_a = this.dropbox) === null || _a === void 0 ? void 0 : _a.loadDropboxIfc();
 	    }
 	}
 
@@ -74918,13 +74952,11 @@
 	}
 
 	const container = document.getElementById("viewer-container");
-	const viewer = new Viewer(container);
-	new Grid(viewer, 100, 100);
-	new Axes(viewer);
-	const clippingComponent = new ClippingComponent(viewer);
-	const dropBoxAPI = new DropboxAPI(viewer);
-
-	const edges = new Edges(viewer);
+	const viewer = new IfcViewerAPI({container});
+	viewer.addAxes();
+	viewer.addGrid();
+	viewer.setWasmPath("wasm/");
+	// const edges = new Edges(viewer);
 
 	//Setup loader
 	const loadIfc = async (event) => {
@@ -74937,8 +74969,13 @@
 	inputElement.addEventListener('change', loadIfc, false);
 	document.body.appendChild(inputElement);
 
-	window.onmousemove = viewer.preselect;
-	window.ondblclick = viewer.select;
+	const handleKeyDown = (event) => {
+	    viewer.removeClippingPlane();
+	};
+
+	window.onmousemove = viewer.prepickIfcItem;
+	window.onkeydown = handleKeyDown;
+	window.ondblclick = viewer.addClippingPlane;
 
 	//Setup UI
 	const loadButton = createSideMenuButton('./resources/folder-icon.svg');
@@ -74950,19 +74987,13 @@
 	const sectionButton = createSideMenuButton('./resources/section-plane-down.svg');
 	sectionButton.addEventListener('click', () => {
 	    sectionButton.blur();
-	    clippingComponent.active = !clippingComponent.active;
-	});
-
-	const edgesButton = createSideMenuButton('./resources/wireframe-cube.svg');
-	edgesButton.addEventListener('click', () => {
-	    edgesButton.blur();
-	    edges.active ? edges.deactivateEdgeDisplay() : edges.activateEdgeDisplay();
+	    viewer.toggleClippingPlanes();
 	});
 
 	const dropBoxButton = createSideMenuButton('./resources/dropbox-icon.svg');
 	dropBoxButton.addEventListener('click', () => {
 	    dropBoxButton.blur();
-	    dropBoxAPI.loadDropboxIfc();
+	    viewer.openDropboxWindow();
 	});
 
 }());
