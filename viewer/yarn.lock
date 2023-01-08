@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
+  version: 6
   cacheKey: 7
 
 "@babel/code-frame@npm:7.12.11":
@@ -39,7 +39,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.14.6, @babel/core@npm:^7.1.0, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5":
+"@babel/core@npm:^7.1.0, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5":
   version: 7.14.6
   resolution: "@babel/core@npm:7.14.6"
   dependencies:
@@ -2934,15 +2934,16 @@ fsevents@^2.3.2:
   dependencies:
     node-gyp: latest
   checksum: a1883f4ca12b8b403ec528f1a4cb312b0877eacd24719da535cabea78d6fdd78530e3538bdba590a1c0f6c295128f964a89182621885296353a44dcfa4f9db53
+  conditions: os=darwin
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@^2.3.2#builtin<compat/fsevents>":
+"fsevents@patch:fsevents@^2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#builtin<compat/fsevents>::version=2.3.2&hash=11e9ea"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
-  checksum: 7b25d9251aefe433d508a0eb614217f0495ae05a9e8af15f7dbf9998e08c4e675acd1cf32361e0fcf71d917d9e8c4b76301fdc72a1ec1105a3ea0994f5e15a8d
+  conditions: os=darwin
   languageName: node
   linkType: hard
 
@@ -4118,7 +4119,7 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
-"jest-resolve@npm:27.0.6, jest-resolve@npm:^27.0.6":
+"jest-resolve@npm:^27.0.6":
   version: 27.0.6
   resolution: "jest-resolve@npm:27.0.6"
   dependencies:
@@ -4428,13 +4429,13 @@ fsevents@^2.3.2:
   linkType: hard
 
 "json5@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "json5@npm:1.0.1"
+  version: 1.0.2
+  resolution: "json5@npm:1.0.2"
   dependencies:
     minimist: ^1.2.0
   bin:
     json5: lib/cli.js
-  checksum: df41624f9f40bfacc546f779eef6d161a3312fbb6ec1dbd69f8c4388e9807af653b753371ab19b6d2bab22af2ca7dde62fe03c791596acf76915e1fc4ee6fd88
+  checksum: 8/866458a8c58a95a49bef3adba929c625e82532bcff1fe93f01d29cb02cac7c3fe1f4b79951b7792c2da9de0b32871a8401a6e3c5b36778ad852bf5b8a61165d7
   languageName: node
   linkType: hard
 
@@ -4871,6 +4872,13 @@ fsevents@^2.3.2:
   bin:
     mkdirp: bin/cmd.js
   checksum: 1aa3a6a2d7514f094a91329ec09994f5d32d2955a4985ecbb3d86f2aaeafc4aa11521f98d606144c1d49cd9835004d9a73342709b8c692c92e59eacf37412468
+  languageName: node
+  linkType: hard
+
+"monaco-editor@npm:^0.25.2":
+  version: 0.25.2
+  resolution: "monaco-editor@npm:0.25.2"
+  checksum: 8/27a581f147984d3fca1f2d036a81a4265fe3f8fa65fcfa5d92f67473177ae87ff9e08891260d54efe765a2b534eece1f1d5f1751992f4e80bfb795f40abe6c27
   languageName: node
   linkType: hard
 
@@ -5749,13 +5757,13 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>":
+"resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>":
   version: 1.20.0
-  resolution: "resolve@patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa"
+  resolution: "resolve@patch:resolve@npm%3A1.20.0#~builtin<compat/resolve>::version=1.20.0&hash=07638b"
   dependencies:
     is-core-module: ^2.2.0
     path-parse: ^1.0.6
-  checksum: c4a515b76026806b5b26513fc7bdb80458c532bc91c02ef45ac928d1025585f93bec0b904be39c02131118a37ff7e3f9258f1526850b025d2ec0948bb5fd03d0
+  checksum: 8/a0dd7d16a8e47af23afa9386df2dff10e3e0debb2c7299a42e581d9d9b04d7ad5d2c53f24f1e043f7b3c250cbdc71150063e53d0b6559683d37f790b7c8c3cd5
   languageName: node
   linkType: hard
 
@@ -6379,6 +6387,15 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
+"three-mesh-bvh@npm:^0.4.1":
+  version: 0.4.3
+  resolution: "three-mesh-bvh@npm:0.4.3"
+  peerDependencies:
+    three: ">= 0.123.0"
+  checksum: 8/91db5b2e484ad038868bb88709b335edafd8373c7d1783d7785648a55f45e94c9804a807c43fd59db12aac3fd768336268e6f6b1b9bd7bad221911b4ff7297ab
+  languageName: node
+  linkType: hard
+
 "three@npm:^0.128.0":
   version: 0.128.0
   resolution: "three@npm:0.128.0"
@@ -6531,6 +6548,15 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
+"tsc@npm:^2.0.3":
+  version: 2.0.4
+  resolution: "tsc@npm:2.0.4"
+  bin:
+    tsc: bin/tsc
+  checksum: 8/50b10240887424c66454687f0fca4e319713b35cb44f0dab228719eb4dd757251f83c3d79e60d29dfbe90c2d6f1272f793b83e75a9fca2c622b4213ad3eb8cb1
+  languageName: node
+  linkType: hard
+
 "tsconfig-paths@npm:^3.9.0":
   version: 3.9.0
   resolution: "tsconfig-paths@npm:3.9.0"
@@ -6640,13 +6666,13 @@ typescript@^4.3.2:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.3.2#builtin<compat/typescript>":
+"typescript@patch:typescript@^4.3.2#~builtin<compat/typescript>":
   version: 4.3.5
-  resolution: "typescript@patch:typescript@npm%3A4.3.5#builtin<compat/typescript>::version=4.3.5&hash=ddfc1b"
+  resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 7f0b8343f71ecac18095be1476b398aca420ab60dc207cc1efe078f381eef5527b80a518297720257114cdbda65612f8839e4b63e85dc95e67ac5cbbade8bdf0
+  checksum: 8/365df18cf979c971ef9543b2acaa8694377a803f98e1804c41d0ede0b09d7046cb0cd98f2eaf3884b0fe923c01a60af1f653841bd8805c9715d5479c09a4ebe4
   languageName: node
   linkType: hard
 
@@ -6810,15 +6836,15 @@ typescript@^4.3.2:
   languageName: node
   linkType: hard
 
-"web-ifc-three@npm:0.0.31":
-  version: 0.0.31
-  resolution: "web-ifc-three@npm:0.0.31"
+"web-ifc-three@npm:^0.0.40":
+  version: 0.0.40
+  resolution: "web-ifc-three@npm:0.0.40"
   dependencies:
     stats.js: ^0.17.0
     three: ^0.128.0
     three-mesh-bvh: ^0.3.7
-    web-ifc: 0.0.20
-  checksum: c668771fee63d91f6c34257017dca910fff5ff6c277e23007f70de8bded554828039bbf44c5233be1ed6b7c84a42d82e1b9f981ccc82c8be6edb55e9ca01edf5
+    web-ifc: 0.0.21
+  checksum: 8/58257bdac6ce997787563e1f92056726897f61c97ba5653acadf88f2ea8eb10db70a469f0d5be83fe4a4f33409e95a2edacdab7be22fc285099d6c0da46c7024
   languageName: node
   linkType: hard
 
@@ -6843,17 +6869,21 @@ typescript@^4.3.2:
     prettier: ^2.3.1
     stats.js: ^0.17.0
     three: ^0.128.0
+    three-mesh-bvh: ^0.4.1
     ts-jest: ^27.0.3
     ts-node: ^10.0.0
     typescript: ^4.3.2
-    web-ifc-three: 0.0.31
+    web-ifc-three: ^0.0.40
   languageName: unknown
   linkType: soft
 
-"web-ifc@npm:0.0.20":
-  version: 0.0.20
-  resolution: "web-ifc@npm:0.0.20"
-  checksum: d3c8f71dbb0caf202f8fbfeb735486a91b4f86ff68d0115ca2ed9a4f7b444def6e8ce4bf793cb048660bc3a2683ba8ac1b7ccf676935c79226d7929151abecdf
+"web-ifc@npm:0.0.21":
+  version: 0.0.21
+  resolution: "web-ifc@npm:0.0.21"
+  dependencies:
+    monaco-editor: ^0.25.2
+    tsc: ^2.0.3
+  checksum: 8/8b5f89173550a64281b8dd57bbe00c2ff155876b7c322b1971a524b55285ce51953c16c19fd9b5d23dabab40d22ac99aa2106edd730231dd6042bfad7a18a389
   languageName: node
   linkType: hard
 
